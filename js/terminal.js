@@ -80,10 +80,6 @@ $(function () {
 
     term._initialized = true;
 
-    term.prompt = () => {
-      term.write('\r\n$ ');
-    };
-
     // TODO: Use a nicer default font
     term.writeln([
       '    Xterm.js is the frontend component that powers many terminals including',
@@ -121,7 +117,7 @@ $(function () {
           break;
         case '\u007F': // Backspace (DEL)
           // Do not delete the prompt
-          if (term._core.buffer.x > 2) {
+          if (term._core.buffer.x > 18) {
             term.write('\b \b');
             if (command.length > 0) {
               command = command.slice(0, command.length - 1);
@@ -230,7 +226,7 @@ $(function () {
 
   function prompt(term) {
     command = '';
-    term.write('\r\nuser @ cubelink $ ');
+    term.write('\r\n\x1b[32;1muser \x1b[33m@ \x1b[32mcubelink \x1b[0m$ ');
   }
 
   var command = '';
@@ -317,7 +313,7 @@ $(function () {
           let time = Math.round(performance.now() - start);
           let mbs = ((byteCount / 1024) * (1 / (time / 1000))).toFixed(2);
           term.write(`\n\r\nWrote ${byteCount}kB in ${time}ms (${mbs}MB/s) using the ${isWebglEnabled ? 'webgl' : 'canvas'} renderer`);
-          prompt();
+          prompt(term);
         });
       },
       description: 'Simulate a lot of data coming from a process'
@@ -381,7 +377,7 @@ $(function () {
         const maxLength = lines.reduce((p, c) => Math.max(p, c[0].length), 0);
         term.write('\r\n');
         term.writeln(lines.map(e => `${e[0].padStart(maxLength)}  ${e[1]}\x1b[0m`).join('\r\n'));
-        term.prompt();
+        prompt(term);
       },
       description: 'Prints a wide range of characters and styles that xterm.js can handle'
     }
