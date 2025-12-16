@@ -2,7 +2,8 @@ body {
     font-family: "Source Sans Pro", Arial, sans-serif;
     font-size: 17px;
     color: #4b4f5c;
-    line-height: 1.42857143
+    line-height: 1.42857143;
+    background-color: #8c92ac
 }
 
 pre,
