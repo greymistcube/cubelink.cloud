@@ -238,12 +238,12 @@ a:hover code {
 .demo {
     display: flex;
     justify-content: center;
-    margin: 20px 0 50px
+    margin: 20px
 }
 
 .demo .inner {
-    padding: 10px 20px;
-    border-radius: 4px;
+    padding: 20px;
+    border-radius: 10px;
     background-color: #2D2E2C
 }
 

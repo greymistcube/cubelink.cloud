@@ -45,7 +45,11 @@ $(function () {
   };
   var isBaseTheme = true;
 
+  var fontSize = getFontSize();
+  var rows = getNumRows(fontSize);
   var term = new window.Terminal({
+    fontSize: fontSize,
+    rows: rows,
     fontFamily: '"Cascadia Code", Menlo, monospace',
     theme: baseTheme,
     cursorBlink: true,
@@ -103,7 +107,6 @@ $(function () {
     ].join('\n\r'));
 
     term.writeln('Below is a simple emulated backend, try running `help`.');
-    addDecoration(term);
     prompt(term);
 
     term.onData(e => {
@@ -227,7 +230,7 @@ $(function () {
 
   function prompt(term) {
     command = '';
-    term.write('\r\n$ ');
+    term.write('\r\nuser @ cubelink $ ');
   }
 
   var command = '';
@@ -282,7 +285,7 @@ $(function () {
     ls: {
       f: () => {
         term.writeln(['a', 'bunch', 'of', 'fake', 'files'].join('\r\n'));
-        term.prompt(term);
+        prompt(term);
       },
       description: 'Prints a fake directory structure'
     },
@@ -314,7 +317,7 @@ $(function () {
           let time = Math.round(performance.now() - start);
           let mbs = ((byteCount / 1024) * (1 / (time / 1000))).toFixed(2);
           term.write(`\n\r\nWrote ${byteCount}kB in ${time}ms (${mbs}MB/s) using the ${isWebglEnabled ? 'webgl' : 'canvas'} renderer`);
-          term.prompt();
+          prompt();
         });
       },
       description: 'Simulate a lot of data coming from a process'
@@ -399,15 +402,3 @@ $(function () {
 
   runFakeTerminal();
 });
-
-function addDecoration(term) {
-  const marker = term.registerMarker(15);
-  const decoration = term.registerDecoration({ marker, x: 44 });
-  decoration.onRender(element => {
-    element.classList.add('link-hint-decoration');
-    element.innerText = 'Try clicking italic text';
-    // must be inlined to override inlined width/height coming from xterm
-    element.style.height = '';
-    element.style.width = '';
-  });
-}
