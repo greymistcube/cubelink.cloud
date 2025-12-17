@@ -103,17 +103,22 @@ $(function () {
     ].join('\n\r'));
 
     term.writeln('Below is a simple emulated backend, try running `help`.');
+
+    // Initial prompt
+    var command = '';
     prompt(term);
 
     term.onData(e => {
       switch (e) {
         case '\u0003': // Ctrl+C
           term.write('^C');
+          command = '';
           prompt(term);
           break;
         case '\r': // Enter
           runCommand(term, command);
           command = '';
+          prompt(term);
           break;
         case '\u007F': // Backspace (DEL)
           // Do not delete the prompt
@@ -225,11 +230,10 @@ $(function () {
   }
 
   function prompt(term) {
-    command = '';
-    term.write('\r\n\x1b[32;1muser \x1b[33m@ \x1b[32mcubelink \x1b[0m$ ');
+    term.writeln('');
+    term.write('\x1b[32;1muser \x1b[33m@ \x1b[32mcubelink \x1b[0m$ ');
   }
 
-  var command = '';
   var commands = {
     help: {
       f: () => {
@@ -269,19 +273,19 @@ $(function () {
           );
           return message;
         }
+        term.writeln('');
         term.writeln([
           'Welcome to xterm.js! Try some of the commands below.',
           '',
           ...Object.keys(commands).map(e => formatMessage(e, commands[e].description))
         ].join('\n\r'));
-        prompt(term);
       },
       description: 'Prints this help message',
     },
     ls: {
       f: () => {
-        term.writeln(['a', 'bunch', 'of', 'fake', 'files'].join('\r\n'));
-        prompt(term);
+        term.writeln('');
+        term.writeln(['a', 'bunch', 'of', 'fake', 'files'].join('\n\r'));
       },
       description: 'Prints a fake directory structure'
     },
@@ -289,32 +293,29 @@ $(function () {
       f: () => {
         let testData = [];
         let byteCount = 0;
-        for (let i = 0; i < 50; i++) {
-          let count = 1 + Math.floor(Math.random() * 79);
-          byteCount += count + 2;
-          let data = new Uint8Array(count + 2);
-          data[0] = 0x0A; // \n
-          for (let i = 1; i < count + 1; i++) {
-            data[i] = 0x61 + Math.floor(Math.random() * (0x7A - 0x61));
+        for (let i = 0; i < 256; i++) {
+          let count = 1 + Math.ceil(Math.random() * 79);
+          byteCount += count;
+          let data = new Uint8Array(count);
+          for (let j = 0; j < count; j++) {
+            data[j] = 0x61 + Math.floor(Math.random() * (0x7A - 0x61));
           }
-          // End each line with \r so the cursor remains constant, this is what ls/tree do and improves
-          // performance significantly due to the cursor DOM element not needing to change
-          data[data.length - 1] = 0x0D; // \r
           testData.push(data);
         }
         let start = performance.now();
-        for (let i = 0; i < 1024; i++) {
+
+        term.writeln('');
+        for (let i = 0; i < 256; i++) {
           for (const d of testData) {
-            term.write(d);
+            term.writeln(d);
           }
         }
+
         // Wait for all data to be parsed before evaluating time
-        term.write('', () => {
-          let time = Math.round(performance.now() - start);
-          let mbs = ((byteCount / 1024) * (1 / (time / 1000))).toFixed(2);
-          term.write(`\n\r\nWrote ${byteCount}kB in ${time}ms (${mbs}MB/s) using the ${isWebglEnabled ? 'webgl' : 'canvas'} renderer`);
-          prompt(term);
-        });
+        let time = Math.round(performance.now() - start);
+        let mbs = ((byteCount / 1024) * (1 / (time / 1000))).toFixed(2);
+        term.writeln('');
+        term.writeln(`Wrote ${byteCount}kB in ${time}ms (${mbs}MB/s) using the ${isWebglEnabled ? 'webgl' : 'canvas'} renderer`);
       },
       description: 'Simulate a lot of data coming from a process'
     },
@@ -375,25 +376,25 @@ $(function () {
           ['Underlines ─', ['\x1b[4:1mStraight', '\x1b[4:2mDouble', '\x1b[4:3mCurly', '\x1b[4:4mDotted', '\x1b[4:5mDashed'].join('\x1b[0m, ')],
         ];
         const maxLength = lines.reduce((p, c) => Math.max(p, c[0].length), 0);
-        term.write('\r\n');
+        term.writeln('');
         term.writeln(lines.map(e => `${e[0].padStart(maxLength)}  ${e[1]}\x1b[0m`).join('\r\n'));
-        prompt(term);
       },
       description: 'Prints a wide range of characters and styles that xterm.js can handle'
     }
   };
 
   function runCommand(term, text) {
+    term.writeln('');
+
     const command = text.trim().split(' ')[0];
     if (command.length > 0) {
-      term.writeln('');
       if (command in commands) {
         commands[command].f();
-        return;
+      } else {
+        term.writeln('');
+        term.writeln(`${command}: command not found`);
       }
-      term.writeln(`${command}: command not found`);
     }
-    prompt(term);
   }
 
   runFakeTerminal();
