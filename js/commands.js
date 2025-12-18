@@ -1,23 +1,27 @@
 const commands = {
   help: {
-    f: (term) => runHelp(term),
+    f: (term, args) => runHelp(term, args),
     description: 'Prints this help message',
   },
   ls: {
-    f: (term) => runLs(term),
+    f: (term, args) => runLs(term, args),
     description: 'Prints a fake directory structure'
   },
   loadtest: {
-    f: (term) => runLoadTest(term),
+    f: (term, args) => runLoadTest(term, args),
     description: 'Simulate a lot of data coming from a process'
   },
   chars: {
-    f: (term) => runChars(term),
+    f: (term, args) => runChars(term, args),
     description: 'Prints a wide range of characters and styles that xterm.js can handle'
+  },
+  cat: {
+    f: (term, args) => runCat(term, args),
+    description: 'Prints the contents of a file in a terminal'
   }
 };
 
-function runHelp(term) {
+function runHelp(term, args) {
   const padding = 10;
   function formatMessage(name, description) {
     const maxLength = term.cols - padding - 3;
@@ -63,13 +67,13 @@ function runHelp(term) {
   return;
 }
 
-function runLs(term) {
+function runLs(term, args) {
   term.writeln('');
-  term.writeln(['a', 'bunch', 'of', 'fake', 'files'].join('\r\n'));
+  term.writeln(Object.keys(files).join('\r\n'));
   return;
 }
 
-function runLoadTest(term) {
+function runLoadTest(term, args) {
   let testData = [];
   let byteCount = 0;
   for (let i = 0; i < 256; i++) {
@@ -98,7 +102,7 @@ function runLoadTest(term) {
   return;
 }
 
-function runChars(term) {
+function runChars(term, args) {
   const _1to8 = [];
   for (let i = 1; i <= 8; i++) {
     _1to8.push(i);
@@ -156,5 +160,27 @@ function runChars(term) {
   const maxLength = lines.reduce((p, c) => Math.max(p, c[0].length), 0);
   term.writeln('');
   term.writeln(lines.map(e => `${e[0].padStart(maxLength)}  ${e[1]}\x1b[0m`).join('\r\n'));
+  return;
+}
+
+function runCat(term, args) {
+  if (args.length > 0) {
+    const filename = args[0];
+    if (filename in files) {
+      const file = files[filename];
+
+      term.writeln('')
+      for (const line of file) {
+        term.writeln(line);
+      }
+    } else {
+      term.writeln('');
+      term.writeln('cat: invalid argument');
+    }
+  } else {
+    term.writeln('');
+    term.writeln('cat: invalid argument');
+  }
+
   return;
 }

@@ -35,10 +35,13 @@ function prompt(term) {
 function runCommand(term, text) {
   term.writeln('');
 
-  const command = text.trim().split(' ')[0];
-  if (command.length > 0) {
+  const words = text.split(' ').filter(word => word.length > 0);
+  if (words.length > 0) {
+    const command = words[0];
+    const args = words.slice(1);
+
     if (command in commands) {
-      commands[command].f(term);
+      commands[command].f(term, args);
     } else {
       term.writeln('');
       term.writeln(`${command}: command not found`);
