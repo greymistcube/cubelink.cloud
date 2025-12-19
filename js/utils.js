@@ -42,13 +42,18 @@ function runCommand(term, text) {
 
     if (command in commands) {
       commands[command].f(term, args);
+      return;
     } else {
       term.writeln('');
       term.writeln(`${command}: command not found`);
-    }
-  }
 
-  return;
+      prompt(term);
+      return;
+    }
+  } else {
+    prompt(term);
+    return;
+  }
 }
 
 let isWebglEnabled = false;

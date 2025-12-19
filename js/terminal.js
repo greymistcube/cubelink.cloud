@@ -97,7 +97,6 @@ $(function () {
         case '\r': // Enter
           runCommand(term, command);
           command = '';
-          prompt(term);
           break;
         case '\u007F': // Backspace (DEL)
           // Do not delete the prompt

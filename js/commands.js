@@ -18,6 +18,10 @@ const commands = {
   cat: {
     f: (term, args) => runCat(term, args),
     description: 'Prints the contents of a file in a terminal'
+  },
+  clear: {
+    f: (term, args) => runClear(term, args),
+    description: 'Clears the terminal screen'
   }
 };
 
@@ -64,12 +68,16 @@ function runHelp(term, args) {
     '',
     ...Object.keys(commands).map(e => formatMessage(e, commands[e].description))
   ].join('\r\n'));
+
+  prompt(term);
   return;
 }
 
 function runLs(term, args) {
   term.writeln('');
   term.writeln(Object.keys(files).join('\r\n'));
+
+  prompt(term);
   return;
 }
 
@@ -99,6 +107,8 @@ function runLoadTest(term, args) {
   let mbs = ((byteCount / 1024) * (1 / (time / 1000))).toFixed(2);
   term.writeln('');
   term.writeln(`Wrote ${byteCount}kB in ${time}ms (${mbs}MB/s) using the ${isWebglEnabled ? 'webgl' : 'canvas'} renderer`);
+
+  prompt(term);
   return;
 }
 
@@ -160,6 +170,8 @@ function runChars(term, args) {
   const maxLength = lines.reduce((p, c) => Math.max(p, c[0].length), 0);
   term.writeln('');
   term.writeln(lines.map(e => `${e[0].padStart(maxLength)}  ${e[1]}\x1b[0m`).join('\r\n'));
+
+  prompt(term);
   return;
 }
 
@@ -182,5 +194,12 @@ function runCat(term, args) {
     term.writeln('cat: invalid argument');
   }
 
+  prompt(term);
+  return;
+}
+
+function runClear(term, args) {
+  prompt(term);
+  term.write('', () => { term.clear() });
   return;
 }
