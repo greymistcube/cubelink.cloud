@@ -69,6 +69,7 @@ function runHelp(term, args) {
     ...Object.keys(commands).map(e => formatMessage(e, commands[e].description))
   ].join('\r\n'));
 
+  code = 0;
   prompt(term);
   return;
 }
@@ -77,6 +78,7 @@ function runLs(term, args) {
   term.writeln('');
   term.writeln(Object.keys(files).join('\r\n'));
 
+  code = 0;
   prompt(term);
   return;
 }
@@ -108,6 +110,7 @@ function runLoadTest(term, args) {
   term.writeln('');
   term.writeln(`Wrote ${byteCount}kB in ${time}ms (${mbs}MB/s) using the ${isWebglEnabled ? 'webgl' : 'canvas'} renderer`);
 
+  code = 0;
   prompt(term);
   return;
 }
@@ -171,6 +174,7 @@ function runChars(term, args) {
   term.writeln('');
   term.writeln(lines.map(e => `${e[0].padStart(maxLength)}  ${e[1]}\x1b[0m`).join('\r\n'));
 
+  code = 0;
   prompt(term);
   return;
 }
@@ -185,20 +189,29 @@ function runCat(term, args) {
       for (const line of file) {
         term.writeln(line);
       }
+
+      code = 0;
+      prompt(term);
     } else {
       term.writeln('');
       term.writeln('cat: invalid argument');
+
+      code = 1;
+      prompt(term);
     }
   } else {
     term.writeln('');
     term.writeln('cat: invalid argument');
+
+    code = 1;
+    prompt(term);
   }
 
-  prompt(term);
   return;
 }
 
 function runClear(term, args) {
+  code = 0;
   prompt(term);
   term.write('', () => { term.clear() });
   return;

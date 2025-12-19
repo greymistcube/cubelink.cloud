@@ -85,6 +85,7 @@ $(function () {
 
     // Initial prompt
     var command = '';
+    code = 0;
     prompt(term);
 
     term.onData(e => {
@@ -92,6 +93,7 @@ $(function () {
         case '\u0003': // Ctrl+C
           term.writeln('^C');
           command = '';
+          code = 1; // Proper exit code should be 130, but not important
           prompt(term);
           break;
         case '\r': // Enter
@@ -100,7 +102,7 @@ $(function () {
           break;
         case '\u007F': // Backspace (DEL)
           // Do not delete the prompt
-          if (term._core.buffer.x > 18) {
+          if (term._core.buffer.x > 24) {
             term.write('\b \b');
             if (command.length > 0) {
               command = command.slice(0, command.length - 1);
@@ -172,6 +174,7 @@ $(function () {
                   term.options.theme = isBaseTheme ? baseTheme : otherTheme;
                   document.querySelector('.demo .inner').classList.toggle('other-theme', !isBaseTheme);
                   term.write(`\r\nActivated ${isBaseTheme ? 'xterm.js' : 'snazzy'} theme`);
+                  code = 0;
                   prompt(term);
                 }
               },
