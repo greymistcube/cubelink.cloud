@@ -216,3 +216,16 @@
     z-index: 2;
     position: relative;
 }
+
+div.xterm-link-popup {
+    font-family: "Cascadia Code", Menlo, monospace;
+    font-size: 15px;
+    line-break: normal;
+    padding: 4px 6px;
+    min-width: 15em;
+    max-width: 80%;
+    border-radius: 6px;
+    background: #5f5d5d;
+    color: white;
+    z-index: 9;
+}

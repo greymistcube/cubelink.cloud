@@ -45,8 +45,6 @@ $(function () {
   };
   var isBaseTheme = true;
 
-  var fontSize = getFontSize();
-  var rows = getNumRows(fontSize);
   var term = new window.Terminal({
     fontSize: fontSize,
     rows: rows,
@@ -84,6 +82,7 @@ $(function () {
     var command = '';
     code = 0;
     prompt(term);
+    term.focus();
 
     term.onData(e => {
       switch (e) {
@@ -135,9 +134,11 @@ $(function () {
                   start: { x: x + 1, y: bufferLineNumber },
                   end: { x: x + link['text'].length, y: bufferLineNumber }
                 },
-                activate() {
+                activate: () => {
                   window.open(link['url'], '_blank');
-                }
+                },
+                hover: (event, text) => showLinkPopup(event, link['url']),
+                leave: removeLinkPopup
               });
           }
         }

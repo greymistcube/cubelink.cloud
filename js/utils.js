@@ -1,3 +1,6 @@
+const fontSize = getFontSize();
+const rows = getNumRows();
+
 // Tracks the prompt globally
 let code = 0;
 let promptLength = 24;
@@ -22,7 +25,7 @@ function getFontSize() {
 }
 
 // Calculate the number of rows for the terminal to fit vertically.
-function getNumRows(fontSize) {
+function getNumRows() {
   const paddingSize = 80;
   let height = window.innerHeight - paddingSize;
   let numRows = height / fontSize * 0.84;
@@ -84,3 +87,34 @@ function loadWebgl(term) {
 
   return;
 }
+
+let _linkPopup;
+function removeLinkPopup(_, __) {
+  if (_linkPopup) {
+     _linkPopup.remove();
+     _linkPopup = undefined;
+  }
+}
+
+function showLinkPopup(event, text) {
+  removeLinkPopup(event, text);
+  const parent = event.target.parentNode;
+  const parentRect = parent.getBoundingClientRect();
+  const rootRect = document.documentElement.getBoundingClientRect();
+  let popup = document.createElement('div');
+  popup.classList.add('xterm-link-popup');
+  popup.style.position = 'absolute';
+
+  popup.style.top = (event.clientY - parentRect.top + Math.trunc(fontSize * 0.8)) + 'px';
+  if (event.clientX < rootRect.width / 2) {
+    popup.style.left = (event.clientX - parentRect.left) + 'px';
+  } else {
+    popup.style.right = (parentRect.right - event.clientX) + 'px';
+  }
+
+  popup.style.fontSize = Math.trunc(fontSize * 0.8) + 'px';
+  popup.innerText = text;
+
+  parent.appendChild(popup);
+  _linkPopup = popup;
+};
