@@ -122,7 +122,7 @@ $(function () {
         }
 
         let callbacks = [];
-        for (link of links) {
+        for (let link of links) {
           // Need to consider discrepancy between indices and coordinates
           // The former starts with 0 and the latter starts with 1
           if (bufferLineNumber === link['marker'].line + 1) {
