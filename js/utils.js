@@ -2,6 +2,9 @@
 let code = 0;
 let promptLength = 24;
 
+// Tracks links
+let links = [];
+
 // Calculate the appropriate font size to satisfy the following:
 // - Fit exactly 80 chars horizontally
 // - Fit at least 24 chars vertically
@@ -43,10 +46,11 @@ function prompt(term) {
 }
 
 function runCommand(term, text) {
-  term.writeln('');
+  term.writeln(''); // Changes to the next line from the prompt
 
   const words = text.split(' ').filter(word => word.length > 0);
   if (words.length > 0) {
+    term.writeln(''); // Padding before output
     const command = words[0];
     const args = words.slice(1);
 

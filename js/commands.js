@@ -62,7 +62,7 @@ function runHelp(term, args) {
     );
     return message;
   }
-  term.writeln('');
+
   term.writeln([
     'Welcome to xterm.js! Try some of the commands below.',
     '',
@@ -75,7 +75,6 @@ function runHelp(term, args) {
 }
 
 function runLs(term, args) {
-  term.writeln('');
   term.writeln(Object.keys(files).join('\r\n'));
 
   code = 0;
@@ -97,7 +96,6 @@ function runLoadTest(term, args) {
   }
   let start = performance.now();
 
-  term.writeln('');
   for (let i = 0; i < 256; i++) {
     for (const d of testData) {
       term.writeln(d);
@@ -171,11 +169,33 @@ function runChars(term, args) {
     ['Underlines ─', ['\x1b[4:1mStraight', '\x1b[4:2mDouble', '\x1b[4:3mCurly', '\x1b[4:4mDotted', '\x1b[4:5mDashed'].join('\x1b[0m, ')],
   ];
   const maxLength = lines.reduce((p, c) => Math.max(p, c[0].length), 0);
-  term.writeln('');
   term.writeln(lines.map(e => `${e[0].padStart(maxLength)}  ${e[1]}\x1b[0m`).join('\r\n'));
 
   code = 0;
   prompt(term);
+  return;
+}
+
+function printFile(term, file) {
+  for (const line of file['content']) {
+    term.write(line[0]);
+
+    if (line.length > 1) {
+      for (const link of line.slice(1)) {
+        term.write('', () => {
+          const marker = term.registerMarker();
+          links.push({
+            'marker': marker,
+            'text': link[0],
+            'url': link[1]
+          });
+        });
+      }
+    }
+
+    term.writeln('');
+  }
+
   return;
 }
 
@@ -184,23 +204,16 @@ function runCat(term, args) {
     const filename = args[0];
     if (filename in files) {
       const file = files[filename];
-
-      term.writeln('')
-      for (const line of file) {
-        term.writeln(line);
-      }
-
+      printFile(term, file);
       code = 0;
       prompt(term);
     } else {
-      term.writeln('');
       term.writeln('cat: invalid argument');
 
       code = 1;
       prompt(term);
     }
   } else {
-    term.writeln('');
     term.writeln('cat: invalid argument');
 
     code = 1;

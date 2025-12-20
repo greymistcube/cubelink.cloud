@@ -75,10 +75,7 @@ $(function () {
     term._initialized = true;
 
     // Print welcome text
-    const welcome = files["welcome"];
-    for (const line of welcome) {
-      term.writeln(line);
-    }
+    printFile(term, files['welcome']);
 
     term.writeln('');
     term.writeln('Below is a simple emulated backend, try running `help`.');
@@ -120,43 +117,39 @@ $(function () {
     // Create a very simple link provider which hardcodes links for certain lines
     term.registerLinkProvider({
       provideLinks(bufferLineNumber, callback) {
+        while (links.length > 0 && links[0]['marker'].isDisposed) {
+          links.shift();
+        }
+
+        let callbacks = [];
+        for (link of links) {
+          // Need to consider discrepancy between indices and coordinates
+          // The former starts with 0 and the latter starts with 1
+          if (bufferLineNumber === link['marker'].line + 1) {
+            let text = term.buffer.active.getLine(link['marker'].line).translateToString();
+            let x = text.indexOf(link['text']);
+            callbacks.push({
+                text: link['text'],
+                range: {
+                  // Assumes there is no wrapping
+                  start: { x: x + 1, y: bufferLineNumber },
+                  end: { x: x + link['text'].length, y: bufferLineNumber }
+                },
+                activate() {
+                  window.open(link['url'], '_blank');
+                }
+              });
+          }
+        }
+
+        callback(callbacks);
+        return;
+      }
+    })
+
+    term.registerLinkProvider({
+      provideLinks(bufferLineNumber, callback) {
         switch (bufferLineNumber) {
-          case 2:
-            callback([
-              {
-                text: 'VS Code',
-                range: { start: { x: 28, y: 2 }, end: { x: 34, y: 2 } },
-                activate() {
-                  window.open('https://github.com/microsoft/vscode', '_blank');
-                }
-              },
-              {
-                text: 'Hyper',
-                range: { start: { x: 37, y: 2 }, end: { x: 41, y: 2 } },
-                activate() {
-                  window.open('https://github.com/vercel/hyper', '_blank');
-                }
-              },
-              {
-                text: 'Theia',
-                range: { start: { x: 47, y: 2 }, end: { x: 51, y: 2 } },
-                activate() {
-                  window.open('https://github.com/eclipse-theia/theia', '_blank');
-                }
-              }
-            ]);
-            return;
-          case 8:
-            callback([
-              {
-                text: 'WebGL renderer',
-                range: { start: { x: 54, y: 8 }, end: { x: 67, y: 8 } },
-                activate() {
-                  window.open('https://npmjs.com/package/xterm-addon-webgl', '_blank');
-                }
-              }
-            ]);
-            return;
           case 14:
             callback([
               {
