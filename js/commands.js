@@ -200,7 +200,7 @@ function printFile(term, file) {
 }
 
 function runCat(term, args) {
-  if (args.length > 0) {
+  if (args.length === 1) {
     const filename = args[0];
     if (filename in files) {
       const file = files[filename];
@@ -208,13 +208,21 @@ function runCat(term, args) {
       code = 0;
       prompt(term);
     } else {
-      term.writeln('cat: invalid argument');
-
-      code = 1;
-      prompt(term);
+      if (filename === '-h' || filename ==='--help') {
+        term.writeln('Usage: cat <file>');
+        term.writeln(commands['cat'].description)
+        term.writeln('Example: cat welcome');
+        code = 0;
+        prompt(term);
+      } else {
+        term.writeln('cat: no such file');
+        code = 1;
+        prompt(term);
+      }
     }
   } else {
-    term.writeln('cat: invalid argument');
+    term.writeln('cat: bad usage');
+    term.writeln('Try \'cat --help\' for more information');
 
     code = 1;
     prompt(term);
