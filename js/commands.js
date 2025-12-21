@@ -187,8 +187,12 @@ function printFile(term, file) {
     if (line.length > 1) {
       for (const link of line.slice(1)) {
         term.write('', () => {
-          link.marker = term.registerMarker();
-          links.push(link);
+          links.push({
+            marker: term.registerMarker(),
+            type: link.type,
+            pattern: link.pattern,
+            url: link.url,
+          });
         });
       }
     }
@@ -209,8 +213,8 @@ function runCat(term, args) {
       prompt(term);
     } else {
       if (filename === '-h' || filename ==='--help') {
-        term.writeln('Usage: cat <file>');
         term.writeln(commands['cat'].description)
+        term.writeln('Usage: cat <file>');
         term.writeln('Example: cat welcome');
         code = 0;
         prompt(term);

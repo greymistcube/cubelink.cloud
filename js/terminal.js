@@ -113,10 +113,9 @@ $(function () {
       }
     });
 
-    // Create a very simple link provider which hardcodes links for certain lines
     term.registerLinkProvider({
       provideLinks(bufferLineNumber, callback) {
-        while (links.length > 0 && links[0]['marker'].isDisposed) {
+        while (links.length > 0 && links[0].marker.isDisposed) {
           links.shift();
         }
 
@@ -145,44 +144,6 @@ $(function () {
 
         callback(callbacks);
         return;
-      }
-    })
-
-    term.registerLinkProvider({
-      provideLinks(bufferLineNumber, callback) {
-        switch (bufferLineNumber) {
-          case 14:
-            callback([
-              {
-                text: 'Links',
-                range: { start: { x: 45, y: 14 }, end: { x: 49, y: 14 } },
-                activate() {
-                  window.alert('You can handle links any way you want');
-                }
-              },
-              {
-                text: 'themes',
-                range: { start: { x: 52, y: 14 }, end: { x: 57, y: 14 } },
-                activate() {
-                  isBaseTheme = !isBaseTheme;
-                  term.options.theme = isBaseTheme ? baseTheme : otherTheme;
-                  document.querySelector('.demo .inner').classList.toggle('other-theme', !isBaseTheme);
-                  term.write(`\r\nActivated ${isBaseTheme ? 'xterm.js' : 'snazzy'} theme`);
-                  code = 0;
-                  prompt(term);
-                }
-              },
-              {
-                text: 'addons',
-                range: { start: { x: 60, y: 14 }, end: { x: 65, y: 14 } },
-                activate() {
-                  window.open('/docs/guides/using-addons/', '_blank');
-                }
-              }
-            ]);
-            return;
-        }
-        callback(undefined);
       }
     });
   }
