@@ -21,29 +21,6 @@ $(function () {
     white: '#F8F8F8',
     brightWhite: '#FFFFFF'
   };
-  // vscode-snazzy https://github.com/Tyriar/vscode-snazzy
-  var otherTheme = {
-    foreground: '#eff0eb',
-    background: '#282a36',
-    selection: '#97979b33',
-    black: '#282a36',
-    brightBlack: '#686868',
-    red: '#ff5c57',
-    brightRed: '#ff5c57',
-    green: '#5af78e',
-    brightGreen: '#5af78e',
-    yellow: '#f3f99d',
-    brightYellow: '#f3f99d',
-    blue: '#57c7ff',
-    brightBlue: '#57c7ff',
-    magenta: '#ff6ac1',
-    brightMagenta: '#ff6ac1',
-    cyan: '#9aedfe',
-    brightCyan: '#9aedfe',
-    white: '#f1f1f0',
-    brightWhite: '#eff0eb'
-  };
-  var isBaseTheme = true;
 
   var term = new window.Terminal({
     fontSize: fontSize,
@@ -87,29 +64,38 @@ $(function () {
     term.onData(e => {
       switch (e) {
         case '\u0003': // Ctrl+C
-          term.writeln('^C');
-          command = '';
           code = 1; // Proper exit code should be 130, but not important
-          prompt(term);
+          if (!process) {
+            term.writeln('^C');
+            command = '';
+            prompt(term);
+          }
           break;
         case '\r': // Enter
-          runCommand(term, command);
-          command = '';
+          if (!process) {
+            runCommand(term, command);
+            command = '';
+          }
           break;
         case '\u007F': // Backspace (DEL)
-          // Do not delete the prompt
-          if (term._core.buffer.x > 24) {
-            term.write('\b \b');
-            if (command.length > 0) {
-              command = command.slice(0, command.length - 1);
+          if (!process) {
+            // Do not delete the prompt
+            if (term._core.buffer.x > 24) {
+              term.write('\b \b');
+              if (command.length > 0) {
+                command = command.slice(0, command.length - 1);
+              }
             }
           }
           break;
         default: // Print all other characters for demo
-          if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
-            command += e;
-            term.write(e);
+          if (!process) {
+            if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
+              command += e;
+              term.write(e);
+            }
           }
+          break;
       }
     });
 

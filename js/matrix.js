@@ -90,5 +90,5 @@ async function runMatrix(term, args) {
   // Move the cursor to the bottom first before clearing
   term.writeln(`\x1b[${rows};1H`);
   prompt(term);
-  term.write('', () => { term.clear() });
+  term.write('', () => { term.clear(); });
 }
