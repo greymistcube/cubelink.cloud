@@ -124,20 +124,20 @@ $(function () {
         for (let link of links) {
           // Need to consider discrepancy between indices and coordinates
           // The former starts with 0 and the latter starts with 1
-          if (bufferLineNumber === link['marker'].line + 1) {
-            let text = term.buffer.active.getLine(link['marker'].line).translateToString();
-            let x = text.indexOf(link['text']);
+          if (bufferLineNumber === link.marker.line + 1) {
+            let text = term.buffer.active.getLine(link.marker.line).translateToString();
+            let x = text.indexOf(link.pattern);
             callbacks.push({
-                text: link['text'],
+                text: link.pattern,
                 range: {
                   // Assumes there is no wrapping
                   start: { x: x + 1, y: bufferLineNumber },
-                  end: { x: x + link['text'].length, y: bufferLineNumber }
+                  end: { x: x + link.pattern.length, y: bufferLineNumber }
                 },
                 activate: () => {
-                  window.open(link['url'], '_blank');
+                  window.open(link.url, '_blank');
                 },
-                hover: (event, text) => showLinkPopup(event, link['url']),
+                hover: (event, text) => showLinkPopup(event, link),
                 leave: removeLinkPopup
               });
           }
@@ -180,23 +180,6 @@ $(function () {
                 }
               }
             ]);
-            return;
-          case 15: callback([
-            {
-              text: 'typed API',
-              range: { start: { x: 45, y: 15 }, end: { x: 53, y: 15 } },
-              activate() {
-                window.open('https://github.com/xtermjs/xterm.js/blob/master/typings/xterm.d.ts', '_blank');
-              }
-            },
-            {
-              text: 'decorations',
-              range: { start: { x: 56, y: 15 }, end: { x: 66, y: 15 } },
-              activate() {
-                window.open('https://github.com/xtermjs/xterm.js/blob/a351f5758a5126308b90d60b604b528462f6f051/typings/xterm.d.ts#L372', '_blank');
-              }
-            },
-          ]);
             return;
         }
         callback(undefined);

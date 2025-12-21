@@ -183,12 +183,8 @@ function printFile(term, file) {
     if (line.length > 1) {
       for (const link of line.slice(1)) {
         term.write('', () => {
-          const marker = term.registerMarker();
-          links.push({
-            'marker': marker,
-            'text': link[0],
-            'url': link[1]
-          });
+          link.marker = term.registerMarker();
+          links.push(link);
         });
       }
     }

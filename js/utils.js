@@ -96,8 +96,8 @@ function removeLinkPopup(_, __) {
   }
 }
 
-function showLinkPopup(event, text) {
-  removeLinkPopup(event, text);
+function showLinkPopup(event, link) {
+  removeLinkPopup(event, link);
   const parent = event.target.parentNode;
   const parentRect = parent.getBoundingClientRect();
   const rootRect = document.documentElement.getBoundingClientRect();
@@ -105,7 +105,12 @@ function showLinkPopup(event, text) {
   popup.classList.add('xterm-link-popup');
   popup.style.position = 'absolute';
 
-  popup.style.top = (event.clientY - parentRect.top + Math.trunc(fontSize * 0.8)) + 'px';
+  if (event.clientY < rootRect.height / 2) {
+    popup.style.top = (event.clientY - parentRect.top + Math.trunc(fontSize * 0.8)) + 'px';
+  } else {
+    popup.style.bottom = (parentRect.bottom - event.clientY + Math.trunc(fontSize * 0.8)) + 'px';
+  }
+
   if (event.clientX < rootRect.width / 2) {
     popup.style.left = (event.clientX - parentRect.left) + 'px';
   } else {
@@ -113,7 +118,14 @@ function showLinkPopup(event, text) {
   }
 
   popup.style.fontSize = Math.trunc(fontSize * 0.8) + 'px';
-  popup.innerText = text;
+
+  if (link.type === 'link') {
+    popup.innerText = link.url;
+  } else if (link.type === 'image') {
+    popup.innerHTML = `<img src="${link.url}" alt="" />`;
+  } else {
+    popup.innerText = 'unknown';
+  }
 
   parent.appendChild(popup);
   _linkPopup = popup;
