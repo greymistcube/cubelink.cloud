@@ -64,7 +64,6 @@ function runCommand(term, text) {
       commands[command].f(term, args);
       return;
     } else {
-      term.writeln('');
       term.writeln(`${command}: command not found`);
 
       code = 1;
