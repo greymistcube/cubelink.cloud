@@ -22,6 +22,10 @@ const commands = {
   clear: {
     f: (term, args) => runClear(term, args),
     description: 'Clears the terminal screen'
+  },
+  matrix: {
+    f: (term, args) => runMatrix(term, args),
+    description: 'Runs The Matrix simulation'
   }
 };
 
