@@ -5,6 +5,9 @@ const rows = getNumRows();
 let code = 0;
 let promptLength = 24;
 
+// Tracks running status of a process
+let process = false;
+
 // Tracks links
 let links = [];
 

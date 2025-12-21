@@ -3,11 +3,15 @@ async function runMatrix(term, args) {
   term.writeln('', () => { term.clear(); });
   term.write('\x1b[?25l');
 
-  const drops = 16;
+  process = true;
+  code = 0;
+  let listener = term.onData(e => { process = false; });
+
+  let rows = term.rows;
+  let cols = term.cols;
+  const drops = rows;
   const tail = 8;
   const sleep = 32;
-  let cols = term.cols;
-  let rows = term.rows;
   let rain = [];
 
   function fillRain(fromTop) {
@@ -33,5 +37,16 @@ async function runMatrix(term, args) {
     fillRain(true);
 
     await new Promise(resolve => setTimeout(resolve, sleep));
+    if (process === false) {
+      // Dispose the listener and turn back on the cursor
+      listener.dispose();
+      term.write('\x1b[?25h');
+      break;
+    }
   }
+
+  // Move the cursor to the bottom first before clearing
+  term.writeln(`\x1b[${rows};1H`);
+  prompt(term);
+  term.write('', () => { term.clear() });
 }
