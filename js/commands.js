@@ -70,7 +70,7 @@ function runHelp(term, args) {
   term.writeln([
     'Welcome to xterm.js! Try some of the commands below.',
     '',
-    ...Object.keys(commands).map(e => formatMessage(e, commands[e].description))
+    ...Object.keys(commands).toSorted().map(e => formatMessage(e, commands[e].description))
   ].join('\r\n'));
 
   code = 0;
@@ -79,7 +79,7 @@ function runHelp(term, args) {
 }
 
 function runLs(term, args) {
-  term.writeln(Object.keys(files).join('\r\n'));
+  term.writeln(Object.keys(files).toSorted().join('  '));
 
   code = 0;
   prompt(term);
