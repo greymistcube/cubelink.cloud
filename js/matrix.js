@@ -9,15 +9,22 @@ async function runMatrix(term, args) {
 
   let rows = term.rows;
   let cols = term.cols;
-  const drops = rows;
-  const tail = 8;
+  const drops = rows; // Tall screens may have many rows
+  const tail = 8; // Actual length is between tail and tail * 2
   const sleep = 64;
+  const glitch = 0.1; // Probability of a character glitch
   let rain = [];
+
+  // Creates a random hex character
+  function randChar() {
+    return Math.floor(Math.random() * 16).toString(16);
+  }
 
   function createDrop() {
     drop = [];
-    while (drop.length < tail) {
-      drop.unshift(Math.floor(Math.random() * 16).toString(16));
+    let len = tail + Math.trunc(Math.random() * 8);
+    while (drop.length < len) {
+      drop.unshift(randChar());
     }
     return drop;
   }
@@ -35,21 +42,27 @@ async function runMatrix(term, args) {
   fillRain(false);
   while (true) {
     for (let elem of rain) {
-      for (let i = 0; i < tail; i++) {
+      for (let i = 0; i < elem.drop.length; i++) {
+        if (Math.random() < glitch) {
+          elem.drop[i] = randChar();
+        }
+
         let y = elem.y - i;
         if (1 <= y && y <= rows) {
           term.write(`\x1b[${y};${elem.x}H`);
           if (i === 0) {
             color = '\x1b[37;1m';
-          } else if (i < tail / 2) {
+          } else if (i < elem.drop.length / 3) {
             color = '\x1b[32;1m';
+          } else if (i < elem.drop.length * 2 / 3) {
+            color = '\x1b[32m';
           } else {
             color = '\x1b[32;2m';
           }
 
           if (i === 0) {
             term.write(`${color}${elem.drop[i]}\x1b[0m`);
-          } else if (i === tail - 1) {
+          } else if (i === elem.drop.length - 1) {
             term.write('\x1b[0m ');
           } else {
             term.write(`${color}${elem.drop[i]}\x1b[0m`);
@@ -59,10 +72,10 @@ async function runMatrix(term, args) {
 
       elem.y += 1;
       elem.drop.pop();
-      elem.drop.unshift(Math.floor(Math.random() * 16).toString(16));
+      elem.drop.unshift(randChar());
     }
 
-    rain = rain.filter(elem => elem.y < rows + tail);
+    rain = rain.filter(elem => elem.y < rows + elem.drop.length);
     fillRain(true);
 
     await new Promise(resolve => setTimeout(resolve, sleep));
