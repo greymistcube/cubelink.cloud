@@ -67,7 +67,8 @@ document.addEventListener('DOMContentLoaded', function() {
     printFile(term, files['welcome']);
 
     term.writeln('');
-    term.writeln('Below is a simple emulated backend, try running `help`.');
+    term.writeln('Welcome to \x1b[38;5;208;1mUbuntu\x1b[0m 24.04.3 LTS (GNU/Linux 6.14.0)') // Host machine environment
+    term.writeln('Below is a simple emulated terminal, try running \'help\'.');
 
     // Initial prompt
     var command = '';
