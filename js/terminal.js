@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // Make terminal visible only when document is ready
+  document.querySelector('.demo').style.display = 'flex';
+
   // Custom theme to match style of xterm.js logo
   var baseTheme = {
     foreground: '#F8F8F8',

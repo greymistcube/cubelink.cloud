@@ -245,7 +245,7 @@ a:hover code {
 }
 
 .demo {
-    display: flex;
+    display: none; /* initially hidden */
     justify-content: center;
     margin: 20px
 }
