@@ -1,3 +1,4 @@
+// This may not behave well on window resize event.
 async function runMatrix(term, args) {
   // Clear the screen and hide the cursor
   term.writeln('', () => { term.clear(); });

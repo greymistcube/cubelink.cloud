@@ -1,5 +1,5 @@
-const fontSize = getFontSize();
-const rows = getNumRows();
+let fontSize = getFontSize();
+let rows = getNumRows();
 
 // Tracks the prompt globally
 let code = 0;

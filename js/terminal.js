@@ -38,6 +38,17 @@ document.addEventListener('DOMContentLoaded', function() {
   // Try loading webgl
   loadWebgl(term);
 
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      fontSize = getFontSize();
+      rows = getNumRows();
+      term.options.fontSize = fontSize;
+      term.resize(80, rows);
+    }, 256);
+  });
+
   // Cancel wheel events from scrolling the page if the terminal has scrollback
   document.querySelector('.xterm').addEventListener('wheel', e => {
     if (term.buffer.active.baseY > 0) {
