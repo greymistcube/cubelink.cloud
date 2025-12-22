@@ -1,4 +1,4 @@
-$(function () {
+document.addEventListener('DOMContentLoaded', function() {
   // Custom theme to match style of xterm.js logo
   var baseTheme = {
     foreground: '#F8F8F8',
