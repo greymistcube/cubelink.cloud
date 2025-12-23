@@ -35,7 +35,7 @@ const files = {
       ['\x1b[36m      \\         \\  /       \x1b[0mMail: \x1b[36m<EMAIL_PATTERN>\x1b[0m', { type: 'link', pattern: '<EMAIL_PATTERN>', url: '<EMAIL_URL>' }],
       ['\x1b[36m       \\ ________\\/        \x1b[0m'],
       ['\x1b[36m                           \x1b[0m'],
-      ['Powered by \x1b[36mXterm.js\x1b[0m', { type: 'link', pattern: 'Xterm.js', url: 'https://xtermjs.org'}]
+      ['Powered by \x1b[36mxterm.js\x1b[0m', { type: 'link', pattern: 'xterm.js', url: 'https://xtermjs.org'}]
     ]
   }
 }

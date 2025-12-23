@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     term.writeln('');
     term.writeln('Welcome to \x1b[38;5;208;1mUbuntu\x1b[0m 24.04.3 LTS (GNU/Linux 6.14.0)') // Host machine environment
-    term.writeln('Below is a simple emulated terminal, try running \'help\'.');
+    term.writeln('Below is a simple emulated terminal, try running \'\x1b[32;1mhelp\x1b[0m\'.');
 
     // Initial prompt
     var command = '';

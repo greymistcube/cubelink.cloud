@@ -61,17 +61,21 @@ function runHelp(term, args) {
       }
     }
     const message = (
-      `  \x1b[36;1m${name.padEnd(padding)}\x1b[0m ${d[0]}` +
+      `  \x1b[32;1m${name.padEnd(padding)}\x1b[0m ${d[0]}` +
       d.slice(1).map(e => `\r\n  ${' '.repeat(padding)} ${e}`)
     );
     return message;
   }
 
-  term.writeln([
-    'Welcome to xterm.js! Try some of the commands below.',
-    '',
-    ...Object.keys(commands).toSorted().map(e => formatMessage(e, commands[e].description))
-  ].join('\r\n'));
+  const preText = {
+    'content': [
+      ['Here is a list of commands you can use in this terminal:'],
+      ['']
+    ]
+  }
+
+  printFile(term, preText);
+  term.writeln(Object.keys(commands).toSorted().map(e => formatMessage(e, commands[e].description)).join('\r\n'));
 
   code = 0;
   prompt(term);
@@ -214,8 +218,12 @@ function runCat(term, args) {
     } else {
       if (filename === '-h' || filename ==='--help') {
         term.writeln(commands['cat'].description)
-        term.writeln('Usage: cat <file>');
-        term.writeln('Example: cat welcome');
+        term.writeln('');
+        term.writeln('Usage:');
+        term.writeln('  \x1b[32;1mcat\x1b[0m <\x1b[33;1mfile\x1b[0m>');
+        term.writeln('');
+        term.writeln('Example:');
+        term.writeln('  \x1b[32;1mcat\x1b[0m \x1b[33;1mwelcome\x1b[0m');
         code = 0;
         prompt(term);
       } else {
@@ -226,7 +234,7 @@ function runCat(term, args) {
     }
   } else {
     term.writeln('cat: bad usage');
-    term.writeln('Try \'cat --help\' for more information');
+    term.writeln('Try \'\x1b[32;1mcat --help\x1b[0m\' for more information');
 
     code = 1;
     prompt(term);
