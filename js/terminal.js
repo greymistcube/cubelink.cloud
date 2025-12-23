@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
     term._initialized = true;
 
     // Print welcome text
-    printFile(term, files['welcome']);
+    printContent(term, files['welcome'].content);
 
     term.writeln('');
     term.writeln('Welcome to \x1b[38;5;208;1mUbuntu\x1b[0m 24.04.3 LTS (GNU/Linux 6.14.0)') // Host machine environment

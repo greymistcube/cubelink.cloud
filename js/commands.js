@@ -74,7 +74,7 @@ function runHelp(term, args) {
     ]
   }
 
-  printFile(term, preText);
+  printContent(term, preText.content);
   term.writeln(Object.keys(commands).toSorted().map(e => formatMessage(e, commands[e].description)).join('\r\n'));
 
   code = 0;
@@ -184,9 +184,18 @@ function runChars(term, args) {
   return;
 }
 
-function printFile(term, file) {
-  for (const line of file['content']) {
-    term.write(line[0]);
+function printContent(term, content) {
+  for (const line of content) {
+    let text = line[0];
+
+    // Inject formatting to links
+    if (line.length > 1) {
+      for (const link of line.slice(1)) {
+        text = text.replace(link.pattern, `\x1b[36m${link.pattern}\x1b[0m`);
+      }
+    }
+
+    term.write(text);
 
     if (line.length > 1) {
       for (const link of line.slice(1)) {
@@ -212,7 +221,7 @@ function runCat(term, args) {
     const filename = args[0];
     if (filename in files) {
       const file = files[filename];
-      printFile(term, file);
+      printContent(term, file.content);
       code = 0;
       prompt(term);
     } else {
