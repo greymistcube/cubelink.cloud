@@ -3,6 +3,7 @@ let rows = getNumRows();
 
 // Tracks the prompt globally
 let code = 0;
+let command = '';
 let promptLength = 24;
 
 // Tracks running status of a process
@@ -132,3 +133,43 @@ function showLinkPopup(event, link) {
   parent.appendChild(popup);
   _linkPopup = popup;
 };
+
+function handleInput(term, event) {
+  switch (event) {
+    case '\u0003': // Ctrl+C
+      code = 1; // Proper exit code should be 130, but not important
+      if (!process) {
+        term.writeln('^C');
+        command = '';
+        prompt(term);
+      }
+      break;
+    case '\r': // Enter
+      if (!process) {
+        runCommand(term, command);
+        command = '';
+      }
+      break;
+    case '\u007F': // Backspace (DEL)
+      if (!process) {
+        // Do not delete the prompt
+        if (term._core.buffer.x > 24) {
+          term.write('\b \b');
+          if (command.length > 0) {
+            command = command.slice(0, command.length - 1);
+          }
+        }
+      }
+      break;
+    default: // Print all other characters for demo
+      if (!process) {
+        if (event >= String.fromCharCode(0x20) && event <= String.fromCharCode(0x7E) || event >= '\u00a0') {
+          command += event;
+          term.write(event);
+        }
+      }
+      break;
+  }
+
+  return;
+}

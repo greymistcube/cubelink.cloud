@@ -71,48 +71,12 @@ document.addEventListener('DOMContentLoaded', function() {
     term.writeln('Below is a simple emulated terminal, try running \'\x1b[32;1mhelp\x1b[0m\'.');
 
     // Initial prompt
-    var command = '';
+    command = '';
     code = 0;
     prompt(term);
     term.focus();
 
-    term.onData(e => {
-      switch (e) {
-        case '\u0003': // Ctrl+C
-          code = 1; // Proper exit code should be 130, but not important
-          if (!process) {
-            term.writeln('^C');
-            command = '';
-            prompt(term);
-          }
-          break;
-        case '\r': // Enter
-          if (!process) {
-            runCommand(term, command);
-            command = '';
-          }
-          break;
-        case '\u007F': // Backspace (DEL)
-          if (!process) {
-            // Do not delete the prompt
-            if (term._core.buffer.x > 24) {
-              term.write('\b \b');
-              if (command.length > 0) {
-                command = command.slice(0, command.length - 1);
-              }
-            }
-          }
-          break;
-        default: // Print all other characters for demo
-          if (!process) {
-            if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
-              command += e;
-              term.write(e);
-            }
-          }
-          break;
-      }
-    });
+    term.onData(e => handleInput(term, e));
 
     term.registerLinkProvider({
       provideLinks(bufferLineNumber, callback) {
