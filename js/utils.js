@@ -66,6 +66,7 @@ function runCommand(term, text) {
       return;
     } else {
       term.writeln(`${command}: command not found`);
+      term.writeln('Try \'\x1b[32;1mhelp\x1b[0m\' to see a list of commands');
 
       code = 1;
       prompt(term);

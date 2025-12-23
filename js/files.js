@@ -35,7 +35,10 @@ const files = {
       ['\x1b[36m      \\         \\  /       \x1b[0mMail: <EMAIL_PATTERN>', { type: 'link', pattern: '<EMAIL_PATTERN>', url: '<EMAIL_URL>' }],
       ['\x1b[36m       \\ ________\\/        \x1b[0m'],
       ['\x1b[36m                           \x1b[0m'],
-      ['Powered by xterm.js', { type: 'link', pattern: 'xterm.js', url: 'https://xtermjs.org'}]
+      ['Powered by xterm.js', { type: 'link', pattern: 'xterm.js', url: 'https://xtermjs.org'}],
+      [''],
+      ['Welcome to \x1b[38;5;208;1mUbuntu\x1b[0m 24.04.3 LTS (GNU/Linux 6.14.0)'], // Host machine environment
+      ['Below is a simple emulated terminal, try running \'\x1b[32;1mhelp\x1b[0m\'.']
     ]
   }
 }
