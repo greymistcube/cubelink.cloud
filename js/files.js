@@ -38,6 +38,7 @@ const files = {
       ['Powered by xterm.js', { type: 'link', pattern: 'xterm.js', url: 'https://xtermjs.org'}],
       [''],
       ['Welcome to \x1b[38;5;208;1mUbuntu\x1b[0m 24.04.3 LTS (GNU/Linux 6.14.0)'], // Host machine environment
+      ['For the best viewing experience, a keyboard and a mouse are recommended.'],
       ['Below is a simple emulated terminal, try running \'help\'.', { type: 'command', pattern: 'help', url: '' }]
     ]
   }

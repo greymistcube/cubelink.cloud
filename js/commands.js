@@ -66,8 +66,17 @@ function runHelp(term, args) {
     ]
   }
 
+  const postText = {
+    'content': [
+      [''],
+      ['You can interact with most \x1b[36;1mcyan text\x1b[0m like this link and this image to open a', { type: 'link', pattern: 'link', url: 'https://github.com/greymistcube' }, { type: 'image', pattern: 'image', url: '/images/logo.png' }],
+      ['link or view an image. You can also click on some \x1b[32;1mgreen text\x1b[0m like this \'help\'', { type: 'command', pattern: 'help', url: ''}],
+      ['to run a command.']
+  ]}
+
   printContent(term, preText.content);
   term.writeln(Object.keys(commands).toSorted().map(e => formatMessage(e, commands[e].description)).join('\r\n'));
+  printContent(term, postText.content);
 
   code = 0;
   prompt(term);
