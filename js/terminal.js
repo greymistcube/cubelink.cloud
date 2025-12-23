@@ -87,6 +87,31 @@ document.addEventListener('DOMContentLoaded', function() {
           if (bufferLineNumber === link.marker.line + 1) {
             let text = term.buffer.active.getLine(link.marker.line).translateToString();
             let x = text.indexOf(link.pattern);
+
+            let activate = () => { };
+            let hover = (event, text) => { };
+            let leave = (event, text) => { };
+            switch(link.type) {
+              case 'link': // Open the link in new window
+                activate = () => { window.open(link.url, '_blank ')};
+                hover = (event, text) => showLinkPopup(event, link);
+                leave = (event, text) => removeLinkPopup(event, link);
+                break;
+              case 'image': // Same as link, but no activate action
+                hover = (event, text) => showLinkPopup(event, link);
+                leave = (event, text) => removeLinkPopup(event, link);
+                break;
+              case 'command': // Simulate entering the command
+                activate = () => {
+                  for (const char of link.pattern + '\r') {
+                    handleInput(term, char);
+                  }
+                };
+                break;
+              default:
+                break;
+            }
+
             callbacks.push({
                 text: link.pattern,
                 range: {
@@ -94,11 +119,9 @@ document.addEventListener('DOMContentLoaded', function() {
                   start: { x: x + 1, y: bufferLineNumber },
                   end: { x: x + link.pattern.length, y: bufferLineNumber }
                 },
-                activate: () => {
-                  window.open(link.url, '_blank');
-                },
-                hover: (event, text) => showLinkPopup(event, link),
-                leave: removeLinkPopup
+                activate: activate,
+                hover: hover,
+                leave: leave
               });
           }
         }

@@ -82,33 +82,41 @@ function runLs(term, args) {
   return;
 }
 
+function printLine(term, line) {
+  let text = line[0];
+
+  // Inject formatting to links / commands
+  if (line.length > 1) {
+    for (const link of line.slice(1)) {
+      if (link.type === 'link' || link.type === 'image') {
+        text = text.replace(link.pattern, `\x1b[36m${link.pattern}\x1b[0m`);
+      } else if (link.type === 'command') {
+        text = text.replace(link.pattern, `\x1b[32;1m${link.pattern}\x1b[0m`);
+      }
+    }
+  }
+
+  term.write(text);
+
+  if (line.length > 1) {
+    for (const link of line.slice(1)) {
+      term.write('', () => {
+        links.push({
+          marker: term.registerMarker(),
+          type: link.type,
+          pattern: link.pattern,
+          url: link.url,
+        });
+      });
+    }
+  }
+
+  term.writeln('');
+}
+
 function printContent(term, content) {
   for (const line of content) {
-    let text = line[0];
-
-    // Inject formatting to links
-    if (line.length > 1) {
-      for (const link of line.slice(1)) {
-        text = text.replace(link.pattern, `\x1b[36m${link.pattern}\x1b[0m`);
-      }
-    }
-
-    term.write(text);
-
-    if (line.length > 1) {
-      for (const link of line.slice(1)) {
-        term.write('', () => {
-          links.push({
-            marker: term.registerMarker(),
-            type: link.type,
-            pattern: link.pattern,
-            url: link.url,
-          });
-        });
-      }
-    }
-
-    term.writeln('');
+    printLine(term, line);
   }
 
   return;
@@ -130,7 +138,7 @@ function runCat(term, args) {
         term.writeln('  \x1b[32;1mcat\x1b[0m <\x1b[33;1mfile\x1b[0m>');
         term.writeln('');
         term.writeln('Example:');
-        term.writeln('  \x1b[32;1mcat\x1b[0m \x1b[33;1mwelcome\x1b[0m');
+        term.writeln('  cat welcome');
         code = 0;
         prompt(term);
       } else {
@@ -141,7 +149,9 @@ function runCat(term, args) {
     }
   } else {
     term.writeln('cat: bad usage');
-    term.writeln('Try \'\x1b[32;1mcat --help\x1b[0m\' for more information');
+    printLine(
+      term,
+      ['Try \'cat --help\' for more information', { type: 'command', pattern: 'cat --help', url: '' }]);
 
     code = 1;
     prompt(term);
