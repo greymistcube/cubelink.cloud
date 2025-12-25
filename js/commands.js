@@ -97,16 +97,23 @@ function printLine(term, line) {
   // Inject formatting to links / commands
   if (line.length > 1) {
     for (const link of line.slice(1)) {
-      if (link.type === 'link' || link.type === 'image') {
-        text = text.replace(link.pattern, `\x1b[36m${link.pattern}\x1b[0m`);
-      } else if (link.type === 'command') {
-        text = text.replace(link.pattern, `\x1b[32;1m${link.pattern}\x1b[0m`);
+      switch (link.type) {
+        case 'link':
+        case 'image':
+          text = text.replace(link.pattern, `\x1b[36m${link.pattern}\x1b[0m`);
+          break;
+        case 'command':
+          text = text.replace(link.pattern, `\x1b[32;1m${link.pattern}\x1b[0m`);
+          break;
+        default:
+          break;
       }
     }
   }
 
   term.write(text);
 
+  // Register interaction after the text is printed
   if (line.length > 1) {
     for (const link of line.slice(1)) {
       term.write('', () => {
