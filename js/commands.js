@@ -93,6 +93,7 @@ function runLs(term, args) {
 
 function printLine(term, line) {
   let text = line[0];
+  const hLine = `\x1b[37;1m${'─'.repeat(80)}\x1b[0m`;
 
   // Inject formatting to links / commands
   if (line.length > 1) {
@@ -104,6 +105,20 @@ function printLine(term, line) {
           break;
         case 'command':
           text = text.replace(link.pattern, `\x1b[32;1m${link.pattern}\x1b[0m`);
+          break;
+        default:
+          break;
+      }
+    }
+  } else {
+  // Crude pseudo markdown formatting
+    if (text.length > 1) {
+      switch (text[0]) {
+        case '#':
+          text = (text.startsWith('## ') ? `${hLine}\r\n\r\n` : '') + `\x1b[34;1m${text}\x1b[0m`;
+          break;
+        case '>':
+          text = `\x1b[37;1m│\x1b[0m\x1b[37;2m${text.slice(1)}\x1b[0m`;
           break;
         default:
           break;

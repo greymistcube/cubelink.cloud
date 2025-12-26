@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
       fontSize = getFontSize();
       rows = getNumRows();
       term.options.fontSize = fontSize;
-      term.resize(80, rows);
+      term.resize(cols, rows);
     }, 256);
   });
 

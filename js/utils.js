@@ -1,4 +1,5 @@
 let fontSize = getFontSize();
+const cols = 80;
 let rows = getNumRows();
 
 // Tracks the prompt globally
