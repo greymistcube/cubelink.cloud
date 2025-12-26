@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let leave = (event, text) => { };
             switch(link.type) {
               case 'link': // Open the link in new window
-                activate = () => { window.open(link.url, '_blank ')};
+                activate = () => { window.open(link.url, '_blank ') };
                 hover = (event, text) => showLinkPopup(event, link);
                 leave = (event, text) => removeLinkPopup(event, link);
                 break;
@@ -98,11 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 leave = (event, text) => removeLinkPopup(event, link);
                 break;
               case 'command': // Simulate entering the command
-                activate = () => {
-                  for (const char of link.pattern + '\r') {
-                    handleInput(term, char);
-                  }
-                };
+                activate = () => { simulateTyping(term, link.pattern + '\r') };
                 break;
               default:
                 break;

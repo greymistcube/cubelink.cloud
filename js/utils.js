@@ -177,3 +177,11 @@ function handleInput(term, event) {
 
   return;
 }
+
+async function simulateTyping(term, input) {
+  const sleep = 32;
+  for (const char of input) {
+    await new Promise(resolve => setTimeout(resolve, sleep));
+    handleInput(term, char);
+  }
+}
