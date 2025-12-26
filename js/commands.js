@@ -18,8 +18,19 @@ const commands = {
   matrix: {
     f: (term, args) => runMatrix(term, args),
     description: 'Run The Matrix simulation'
+  },
+  welcome: {
+    f: (term, args) => runWelcome(term, args),
+    description: 'Print the welcome message'
   }
 };
+
+function runWelcome(term, args) {
+  printContent(term, files['welcome'].content);
+
+  code = 0;
+  prompt(term);
+}
 
 function runHelp(term, args) {
   const padding = 10;
@@ -84,7 +95,25 @@ function runHelp(term, args) {
 }
 
 function runLs(term, args) {
-  term.writeln(Object.keys(files).toSorted().join('  '));
+  const keys = Object.keys(files).toSorted();
+  const filenames = [];
+  const line = [];
+  for (const key of keys) {
+    switch (files[key].permission) {
+      case 'r':
+        filenames.push(`\x1b[33;1m${key}\x1b[0m`);
+        break;
+      case 'x':
+        filenames.push(key);
+        line.push({ type: 'command', pattern: key, url: '' })
+        break;
+      default:
+        break;
+    }
+  }
+
+  line.unshift(filenames.join('  '));
+  printLine(term, line);
 
   code = 0;
   prompt(term);
@@ -158,9 +187,15 @@ function runCat(term, args) {
     const filename = args[0];
     if (filename in files) {
       const file = files[filename];
-      printContent(term, file.content);
-      code = 0;
-      prompt(term);
+      if (file.permission === 'r') {
+        printContent(term, file.content);
+        code = 0;
+        prompt(term);
+      } else {
+        term.writeln('cat: permission denied');
+        code = 1;
+        prompt(term);
+      }
     } else {
       if (filename === '-h' || filename ==='--help') {
         term.writeln(commands['cat'].description)
@@ -169,7 +204,7 @@ function runCat(term, args) {
         term.writeln('  \x1b[32;1mcat\x1b[0m <\x1b[33;1mfile\x1b[0m>');
         term.writeln('');
         term.writeln('Example:');
-        term.writeln('  cat welcome');
+        term.writeln('  cat about.md');
         code = 0;
         prompt(term);
       } else {

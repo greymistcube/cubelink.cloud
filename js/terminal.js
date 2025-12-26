@@ -64,12 +64,8 @@ document.addEventListener('DOMContentLoaded', function() {
     term._initialized = true;
 
     // Print welcome text
-    printContent(term, files['welcome'].content);
+    runWelcome(term, []);
 
-    // Initial prompt
-    command = '';
-    code = 0;
-    prompt(term);
     term.focus();
 
     term.onData(e => handleInput(term, e));
