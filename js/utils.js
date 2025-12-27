@@ -105,7 +105,7 @@ function removeLinkPopup(_, __) {
 
 function showLinkPopup(event, link) {
   removeLinkPopup(event, link);
-  const parent = event.target.parentNode;
+  const parent = event.currentTarget.parentNode;
   const parentRect = parent.getBoundingClientRect();
   const rootRect = document.documentElement.getBoundingClientRect();
   let popup = document.createElement('div');
