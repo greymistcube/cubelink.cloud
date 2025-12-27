@@ -71,11 +71,12 @@ function runLs(term, args) {
   for (const key of keys) {
     switch (files[key].permission) {
       case 'r':
-        filenames.push(`\x1b[33;1m${key}\x1b[0m`);
+        filenames.push(key);
+        line.push({ type: 'alias', pattern: key, url: `cat ${key}`});
         break;
       case 'x':
         filenames.push(key);
-        line.push({ type: 'command', pattern: key, url: '' })
+        line.push({ type: 'command', pattern: key, url: '' });
         break;
       default:
         break;
@@ -105,6 +106,8 @@ function printLine(term, line) {
         case 'command':
           text = text.replace(link.pattern, `\x1b[32;1m${link.pattern}\x1b[0m`);
           break;
+        case 'alias':
+          text = text.replace(link.pattern, `\x1b[33;1m${link.pattern}\x1b[0m`);
         default:
           break;
       }

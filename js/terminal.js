@@ -100,6 +100,8 @@ document.addEventListener('DOMContentLoaded', function() {
               case 'command': // Simulate entering the command
                 activate = () => { simulateTyping(term, link.pattern + '\r') };
                 break;
+              case 'alias':
+                activate = () => { simulateTyping(term, link.url + '\r') };
               default:
                 break;
             }
