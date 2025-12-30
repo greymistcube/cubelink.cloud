@@ -25,11 +25,40 @@ const commands = {
   }
 };
 
+function runCommand(term, text) {
+  term.writeln(''); // Changes to the next line from the prompt
+
+  const words = text.split(' ').filter(word => word.length > 0);
+  if (words.length > 0) {
+    term.writeln(''); // Padding before output
+    const command = words[0];
+    const args = words.slice(1);
+
+    if (command in commands) {
+      commands[command].f(term, args);
+      return;
+    } else {
+      term.writeln(`${command}: command not found`);
+      printLine(
+        term,
+        ['Try \'help\' to see a list of commands', { type: 'command', pattern: 'help', url: '' }]);
+
+      Shell.code = 1;
+      Shell.prompt(term);
+      return;
+    }
+  } else {
+    // Empty prompt does not change the exit status
+    Shell.prompt(term);
+    return;
+  }
+}
+
 function runWelcome(term, args) {
   printContent(term, files['welcome'].content);
 
-  code = 0;
-  prompt(term);
+  Shell.code = 0;
+  Shell.prompt(term);
 }
 
 function runHelp(term, args) {
@@ -59,8 +88,8 @@ function runHelp(term, args) {
   printContent(term, lines);
   printContent(term, postText.content);
 
-  code = 0;
-  prompt(term);
+  Shell.code = 0;
+  Shell.prompt(term);
   return;
 }
 
@@ -86,72 +115,8 @@ function runLs(term, args) {
   line.unshift(filenames.join('  '));
   printLine(term, line);
 
-  code = 0;
-  prompt(term);
-  return;
-}
-
-function printLine(term, line) {
-  let text = line[0];
-  const hLine = `\x1b[37;1m${'─'.repeat(80)}\x1b[0m`;
-
-  // Inject formatting to links / commands
-  if (line.length > 1) {
-    for (const link of line.slice(1)) {
-      switch (link.type) {
-        case 'link':
-        case 'image':
-          text = text.replace(link.pattern, `\x1b[36m${link.pattern}\x1b[0m`);
-          break;
-        case 'command':
-          text = text.replace(link.pattern, `\x1b[32;1m${link.pattern}\x1b[0m`);
-          break;
-        case 'alias':
-          text = text.replace(link.pattern, `\x1b[33;1m${link.pattern}\x1b[0m`);
-        default:
-          break;
-      }
-    }
-  } else {
-  // Crude pseudo markdown formatting
-    if (text.length > 1) {
-      switch (text[0]) {
-        case '#':
-          text = (text.startsWith('## ') ? `${hLine}\r\n\r\n` : '') + `\x1b[34;1m${text}\x1b[0m`;
-          break;
-        case '>':
-          text = `\x1b[37;1m│\x1b[0m\x1b[37;2m${text.slice(1)}\x1b[0m`;
-          break;
-        default:
-          break;
-      }
-    }
-  }
-
-  term.write(text);
-
-  // Register interaction after the text is printed
-  if (line.length > 1) {
-    for (const link of line.slice(1)) {
-      term.write('', () => {
-        links.push({
-          marker: term.registerMarker(),
-          type: link.type,
-          pattern: link.pattern,
-          url: link.url,
-        });
-      });
-    }
-  }
-
-  term.writeln('');
-}
-
-function printContent(term, content) {
-  for (const line of content) {
-    printLine(term, line);
-  }
-
+  Shell.code = 0;
+  Shell.prompt(term);
   return;
 }
 
@@ -162,12 +127,12 @@ function runCat(term, args) {
       const file = files[filename];
       if (file.permission === 'r') {
         printContent(term, file.content);
-        code = 0;
-        prompt(term);
+        Shell.code = 0;
+        Shell.prompt(term);
       } else {
         term.writeln('cat: permission denied');
-        code = 1;
-        prompt(term);
+        Shell.code = 1;
+        Shell.prompt(term);
       }
     } else {
       if (filename === '-h' || filename ==='--help') {
@@ -178,12 +143,12 @@ function runCat(term, args) {
         term.writeln('');
         term.writeln('Example:');
         term.writeln('  cat about.md');
-        code = 0;
-        prompt(term);
+        Shell.code = 0;
+        Shell.prompt(term);
       } else {
         term.writeln('cat: no such file');
-        code = 1;
-        prompt(term);
+        Shell.code = 1;
+        Shell.prompt(term);
       }
     }
   } else {
@@ -192,16 +157,16 @@ function runCat(term, args) {
       term,
       ['Try \'cat --help\' for more information', { type: 'command', pattern: 'cat --help', url: '' }]);
 
-    code = 1;
-    prompt(term);
+    Shell.code = 1;
+    Shell.prompt(term);
   }
 
   return;
 }
 
 function runClear(term, args) {
-  code = 0;
-  prompt(term);
+  Shell.code = 0;
+  Shell.prompt(term);
   term.write('', () => { term.clear() });
   return;
 }

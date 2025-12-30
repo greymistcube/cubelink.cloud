@@ -25,9 +25,11 @@ document.addEventListener('DOMContentLoaded', function() {
     brightWhite: '#FFFFFF'
   };
 
+  Screen.update()
   var term = new window.Terminal({
-    fontSize: fontSize,
-    rows: rows,
+    fontSize: Screen.fontSize,
+    cols: Screen.cols,
+    rows: Screen.rows,
     fontFamily: '"Cascadia Code", Menlo, monospace',
     theme: baseTheme,
     cursorBlink: true,
@@ -42,10 +44,9 @@ document.addEventListener('DOMContentLoaded', function() {
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      fontSize = getFontSize();
-      rows = getNumRows();
-      term.options.fontSize = fontSize;
-      term.resize(cols, rows);
+      Screen.update();
+      term.options.fontSize = Screen.fontSize;
+      term.resize(Screen.cols, Screen.rows);
     }, 256);
   });
 

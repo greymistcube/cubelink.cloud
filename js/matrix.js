@@ -20,8 +20,8 @@ class Rain {
   fill(fromTop) {
     while (this.drops.length < this.count) {
       this.drops.push(new Drop(
-        Math.floor(Math.random() * cols + 1),
-        fromTop ? 1 : Math.floor(Math.random() * rows + 1)
+        Math.floor(Math.random() * this.cols + 1),
+        fromTop ? 1 : Math.floor(Math.random() * this.rows + 1)
       ));
     }
   }
@@ -109,14 +109,14 @@ async function runMatrix(term, args) {
   term.write('\x1b[?25l');
 
   // Turn process to true and add a listener to cancel process from any keypress
-  process = true;
-  code = 0;
-  let listener = term.onData(e => { process = false; });
+  Shell.process = true;
+  Shell.code = 0;
+  let listener = term.onData(e => { Shell.process = false; });
 
   const sleep = 64;
   let rain = new Rain(term.cols, term.rows);
 
-  while (process) {
+  while (Shell.process) {
     rain.render(term);
     rain.fall();
 
@@ -129,6 +129,6 @@ async function runMatrix(term, args) {
 
   // Move the cursor to the bottom first before clearing
   term.writeln(`\x1b[${term.rows};1H`);
-  prompt(term);
+  Shell.prompt(term);
   term.write('', () => { term.clear(); });
 }
