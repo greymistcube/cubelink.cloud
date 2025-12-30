@@ -322,16 +322,20 @@ async function runFluid(term, args) {
   Shell.code = 0;
   let listener = term.onData(e => { Shell.process = false; });
 
-  const sleep = 16;
+  const FPS = 48;
+  const frametime = Math.trunc(1000 / FPS);
+  let start = 0, end = 0;
   let simulator = new Simulator(generate_input());
 
   while (Shell.process) {
+    start = performance.now();
     Renderer.render(term, simulator);
     simulator.update_density();
     simulator.update_force();
     simulator.update_particles_and_grid();
+    end = performance.now();
 
-    await new Promise(resolve => setTimeout(resolve, sleep));
+    await new Promise(resolve => setTimeout(resolve, Math.max(0, frametime)));
   }
 
   // Dispose the listener and turn back on the cursor
