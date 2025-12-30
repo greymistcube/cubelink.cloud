@@ -58,6 +58,7 @@ function printLine(term, line) {
           break;
         case 'alias':
           text = text.replace(link.pattern, `\x1b[33;1m${link.pattern}\x1b[0m`);
+          break;
         default:
           break;
       }

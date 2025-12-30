@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     brightWhite: '#FFFFFF'
   };
 
-  Screen.update()
+  Screen.update();
   var term = new window.Terminal({
     fontSize: Screen.fontSize,
     cols: Screen.cols,
@@ -86,23 +86,24 @@ document.addEventListener('DOMContentLoaded', function() {
             let x = text.indexOf(link.pattern);
 
             let activate = () => { };
-            let hover = (event, text) => { };
-            let leave = (event, text) => { };
+            let hover = (_, __) => { };
+            let leave = (_, __) => { };
             switch(link.type) {
               case 'link': // Open the link in new window
-                activate = () => { window.open(link.url, '_blank ') };
-                hover = (event, text) => showLinkPopup(event, link);
-                leave = (event, text) => removeLinkPopup(event, link);
+                activate = () => { window.open(link.url, '_blank '); };
+                hover = (event, _) => showLinkPopup(event, link);
+                leave = (event, _) => removeLinkPopup(event, link);
                 break;
               case 'image': // Same as link, but no activate action
-                hover = (event, text) => showLinkPopup(event, link);
-                leave = (event, text) => removeLinkPopup(event, link);
+                hover = (event, _) => showLinkPopup(event, link);
+                leave = (event, _) => removeLinkPopup(event, link);
                 break;
               case 'command': // Simulate entering the command
-                activate = () => { simulateTyping(term, link.pattern + '\r') };
+                activate = () => { simulateTyping(term, link.pattern + '\r'); };
                 break;
               case 'alias':
-                activate = () => { simulateTyping(term, link.url + '\r') };
+                activate = () => { simulateTyping(term, link.url + '\r'); };
+                break;
               default:
                 break;
             }

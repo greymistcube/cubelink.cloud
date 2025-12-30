@@ -103,7 +103,7 @@ class Drop {
 }
 
 // This may not behave well on window resize event.
-async function runMatrix(term, args) {
+async function runMatrix(term, _) {
   // Clear the screen and hide the cursor
   term.writeln('', () => { term.clear(); });
   term.write('\x1b[?25l');
@@ -111,7 +111,7 @@ async function runMatrix(term, args) {
   // Turn process to true and add a listener to cancel process from any keypress
   Shell.process = true;
   Shell.code = 0;
-  let listener = term.onData(e => { Shell.process = false; });
+  let listener = term.onData(_ => { Shell.process = false; });
 
   const sleep = 64;
   let rain = new Rain(term.cols, term.rows);

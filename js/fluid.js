@@ -19,7 +19,7 @@ class Vector {
   dist(v) { return Math.sqrt((this.x - v.x) ** 2 + (this.y - v.y) ** 2); }
 }
 
-ZERO_VECTOR = new Vector(0, 0);
+let ZERO_VECTOR = new Vector(0, 0);
 const ENV = {
   // Fixed rows and columns to conserve computation
   ROWS: 24,
@@ -51,7 +51,7 @@ const ENV = {
 
   /** Convection count */
   CN: 2,
-}
+};
 
 const COLORS = {
   GREY: '37;2',
@@ -63,7 +63,7 @@ const COLORS = {
   BG_BLUE_0: '48;5;21',
   BG_BLUE_1: '48;5;27',
   BG_BLUE_2: '48;5;33',
-}
+};
 
 const INPUT = [
   '',
@@ -115,17 +115,17 @@ class Particle {
 
 /** Spiky kernel */
 function W_spiky(p1, p2) {
-  d = p1.pos.dist(p2.pos);
+  let d = p1.pos.dist(p2.pos);
   return (d < ENV.P_RADIUS) ? ((d / ENV.P_RADIUS) - 1) ** 2 : 0;
 }
 
 /** Interaction for between two particles */
 function interaction_force(p1, p2) {
-  d = p1.pos.dist(p2.pos);
+  let d = p1.pos.dist(p2.pos);
   if (d < ENV.P_RADIUS) {
-    pressure = (p1.pos.sub(p2.pos)).mult((p1.rho + p2.rho - 2 * ENV.P0) * ENV.P);
-    viscosity = (p1.v.sub(p2.v)).mult(ENV.Mu);
-    return (pressure.sub(viscosity)).mult((1 - d / ENV.P_RADIUS) / p1.rho)
+    let pressure = (p1.pos.sub(p2.pos)).mult((p1.rho + p2.rho - 2 * ENV.P0) * ENV.P);
+    let viscosity = (p1.v.sub(p2.v)).mult(ENV.Mu);
+    return (pressure.sub(viscosity)).mult((1 - d / ENV.P_RADIUS) / p1.rho);
   } else {
     return ZERO_VECTOR;
   }
@@ -285,8 +285,8 @@ class Renderer {
         if (heatmap[y * 2][x] < 0) {
           lines[y][x] = `\x1b[${COLORS.GREY}m█\x1b[0m`;
         } else if (heatmap[y * 2][x] + heatmap[y * 2 + 1][x] > 0) {
-            let top = Math.ceil(heatmap[y * 2][x] / 2)
-            let top_color = COLORS.FG_BLACK
+            let top = Math.ceil(heatmap[y * 2][x] / 2);
+            let top_color = COLORS.FG_BLACK;
             if (top > 2) {
                 top_color = COLORS.FG_BLUE_2;
             } else if (top > 1) {
@@ -295,8 +295,8 @@ class Renderer {
                 top_color = COLORS.FG_BLUE_0;
             }
 
-            let bottom = Math.ceil(heatmap[y * 2 + 1][x] / 2)
-            let bottom_color = COLORS.BG_BLACK
+            let bottom = Math.ceil(heatmap[y * 2 + 1][x] / 2);
+            let bottom_color = COLORS.BG_BLACK;
             if (bottom > 2) {
                 bottom_color = COLORS.BG_BLUE_2;
             } else if (bottom > 1) {
@@ -323,7 +323,7 @@ class Renderer {
 }
 
 // This may not behave well on window resize event.
-async function runFluid(term, args) {
+async function runFluid(term, _) {
   // Clear the screen and hide the cursor
   term.writeln('', () => { term.clear(); });
   term.write('\x1b[?25l');
@@ -331,7 +331,7 @@ async function runFluid(term, args) {
   // Turn process to true and add a listener to cancel process from any keypress
   Shell.process = true;
   Shell.code = 0;
-  let listener = term.onData(e => { Shell.process = false; });
+  let listener = term.onData(_ => { Shell.process = false; });
 
   const FPS = 48;
   const frametime = Math.trunc(1000 / FPS);
@@ -346,7 +346,7 @@ async function runFluid(term, args) {
     simulator.update_particles_and_grid();
     end = performance.now();
 
-    await new Promise(resolve => setTimeout(resolve, Math.max(0, frametime)));
+    await new Promise(resolve => setTimeout(resolve, Math.max(0, frametime - (end - start))));
   }
 
   // Dispose the listener and turn back on the cursor

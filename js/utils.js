@@ -1,12 +1,10 @@
 // Tracks links
 let links = [];
 
-let isWebglEnabled = false;
 function loadWebgl(term) {
   try {
     const webgl = new window.WebglAddon.WebglAddon();
     term.loadAddon(webgl);
-    isWebglEnabled = true;
   } catch (e) {
     console.warn('WebGL addon threw an exception during load', e);
   }

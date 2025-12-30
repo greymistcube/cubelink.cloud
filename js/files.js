@@ -258,4 +258,4 @@ const files = {
     ],
     'permission': 'r',
   }
-}
+};

@@ -58,16 +58,16 @@ function runCommand(term, text) {
   }
 }
 
-function runWelcome(term, args) {
+function runWelcome(term, _) {
   printContent(term, files['welcome'].content);
 
   Shell.code = 0;
   Shell.prompt(term);
 }
 
-function runHelp(term, args) {
+function runHelp(term, _) {
   const padding = 10;
-  const lines = []
+  const lines = [];
   for (const command of Object.keys(commands).toSorted()) {
     const text = '  ' + command + ' '.repeat(padding - command.length) + commands[command].description;
     lines.push([text, { type: 'command', pattern: command, url: '' }]);
@@ -78,7 +78,7 @@ function runHelp(term, args) {
       ['Here is a list of commands you can use in this terminal:'],
       ['']
     ]
-  }
+  };
 
   const postText = {
     'content': [
@@ -86,7 +86,7 @@ function runHelp(term, args) {
       ['You can interact with most \x1b[36;1mcyan text\x1b[0m like this link and this image to open a', { type: 'link', pattern: 'link', url: 'https://github.com/greymistcube' }, { type: 'image', pattern: 'image', url: '/images/logo.png' }],
       ['link or view an image. You can also click on some \x1b[32;1mgreen text\x1b[0m like this \'help\'', { type: 'command', pattern: 'help', url: ''}],
       ['to run a command.']
-  ]}
+  ]};
 
   printContent(term, preText.content);
   printContent(term, lines);
@@ -97,7 +97,7 @@ function runHelp(term, args) {
   return;
 }
 
-function runLs(term, args) {
+function runLs(term, _) {
   const keys = Object.keys(files).toSorted();
   const filenames = [];
   const line = [];
@@ -140,7 +140,7 @@ function runCat(term, args) {
       }
     } else {
       if (filename === '-h' || filename ==='--help') {
-        term.writeln(commands['cat'].description)
+        term.writeln(commands['cat'].description);
         term.writeln('');
         term.writeln('Usage:');
         term.writeln('  \x1b[32;1mcat\x1b[0m <\x1b[33;1mfile\x1b[0m>');
@@ -168,9 +168,9 @@ function runCat(term, args) {
   return;
 }
 
-function runClear(term, args) {
+function runClear(term, _) {
   Shell.code = 0;
   Shell.prompt(term);
-  term.write('', () => { term.clear() });
+  term.write('', () => { term.clear(); });
   return;
 }
