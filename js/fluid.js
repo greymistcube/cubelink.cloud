@@ -1,3 +1,10 @@
+/**
+ *  @file Javascript reimplementation of Yusuke Endoh's ASCII fluid dynamics
+ *  code, [a submission to IOCCC 2012](https://www.ioccc.org/2012/endoh1/).
+ *  Mostly based on Daniele Venier's [deobfuscated code and explanation](https://asymptoticbits.com/posts/ascii-liquid/).
+ */
+
+/** Custom vector class */
 class Vector {
   constructor(x, y) {
     this.x = x;
@@ -57,6 +64,33 @@ const COLORS = {
   BG_BLUE_1: '48;5;27',
   BG_BLUE_2: '48;5;33',
 }
+
+const INPUT = [
+  '',
+  '',
+  '',
+  '',
+  '    ### .......................                                          ###    ',
+  '    ###.........................                                         ###    ',
+  '    ###.........................                                         ###    ',
+  '    ###.........................                                         ###    ',
+  '    ###.........................                                         ###    ',
+  '    ###.........................                                         ###    ',
+  '    ###.........................                                         ###    ',
+  '    ###.........................                                         ###    ',
+  '    ###.........................                                         ###    ',
+  '    ###.........................                                         ###    ',
+  '    ###.........................                                         ###    ',
+  '    ###.........................                                         ###    ',
+  '    ###.........................                                         ###    ',
+  '    ### .......................                                          ###    ',
+  '    ########################################################################    ',
+  '     ######################################################################     ',
+  '',
+  '',
+  '',
+  '',
+];
 
 class Particle {
   constructor(pos, char) {
@@ -288,29 +322,6 @@ class Renderer {
   }
 }
 
-function generate_input() {
-  const H_PAD = 6, V_PAD = 4, H_THICKNESS = 3, V_THICKNESS = 2;
-  const DIAMETER = ENV.COLS - 2 * H_PAD - 2 * H_THICKNESS;
-  const FILL = Math.trunc(DIAMETER / 3);
-
-  let lines = []
-  for (let y = 0; y < ENV.ROWS; y++) {
-    let line = '';
-    if (y < V_PAD || ENV.ROWS - V_PAD <= y) {
-      line = '';
-    } else {
-      if (ENV.ROWS - V_PAD - V_THICKNESS <= y) {
-        line = ' '.repeat(H_PAD) + '#'.repeat(ENV.COLS - 2 * H_PAD) + ' '.repeat(H_PAD);
-      } else {
-        line = ' '.repeat(H_PAD) + '#'.repeat(H_THICKNESS) + '.'.repeat(FILL) + ' '.repeat(DIAMETER - FILL) + '#'.repeat(H_THICKNESS) + ' '.repeat(H_PAD);
-      }
-    }
-    lines.push(line);
-  }
-
-  return lines;
-}
-
 // This may not behave well on window resize event.
 async function runFluid(term, args) {
   // Clear the screen and hide the cursor
@@ -325,7 +336,7 @@ async function runFluid(term, args) {
   const FPS = 48;
   const frametime = Math.trunc(1000 / FPS);
   let start = 0, end = 0;
-  let simulator = new Simulator(generate_input());
+  let simulator = new Simulator(INPUT);
 
   while (Shell.process) {
     start = performance.now();

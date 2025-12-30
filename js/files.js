@@ -27,6 +27,10 @@ const files = {
     'content': [['']],
     'permission': 'x',
   },
+  'fluid': {
+    'content': [['']],
+    'permission': 'x',
+  },
   'resume.md': {
     'content': [
       ['# Say Cheong'],
