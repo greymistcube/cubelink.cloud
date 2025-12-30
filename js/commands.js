@@ -19,6 +19,10 @@ const commands = {
     f: (term, args) => runMatrix(term, args),
     description: 'Run The Matrix simulation'
   },
+  fluid: {
+    f: (term, args) => runFluid(term, args),
+    description: 'Run the fluid simulation'
+  },
   welcome: {
     f: (term, args) => runWelcome(term, args),
     description: 'Print the welcome message'
