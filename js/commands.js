@@ -1,35 +1,48 @@
-const commands = {
+import { Shell } from "./global.js";
+import { FILES } from "./files.js";
+import { printLine, printLines } from "./printer.js";
+import { runMatrix } from "./matrix.js";
+import { runFluid } from "./fluid.js";
+
+export const COMMANDS = {
   help: {
-    f: (term, args) => runHelp(term, args),
+    run: (term, args) => runHelp(term, args),
     description: 'Print this help message',
   },
   ls: {
-    f: (term, args) => runLs(term, args),
+    run: (term, args) => runLs(term, args),
     description: 'List the contents of the current directory'
   },
   cat: {
-    f: (term, args) => runCat(term, args),
+    run: (term, args) => runCat(term, args),
     description: 'Print the contents of a file in a terminal'
   },
   clear: {
-    f: (term, args) => runClear(term, args),
+    run: (term, args) => runClear(term, args),
     description: 'Clear the terminal screen'
   },
   matrix: {
-    f: (term, args) => runMatrix(term, args),
+    run: (term, args) => runMatrix(term, args),
     description: 'Run The Matrix simulation'
   },
   fluid: {
-    f: (term, args) => runFluid(term, args),
+    run: (term, args) => runFluid(term, args),
     description: 'Run the fluid simulation'
   },
   welcome: {
-    f: (term, args) => runWelcome(term, args),
+    run: (term, args) => runWelcome(term, args),
     description: 'Print the welcome message'
   }
 };
 
-function runCommand(term, text) {
+function runWelcome(term, _) {
+  printLines(term, FILES['welcome'].content);
+
+  Shell.code = 0;
+  Shell.prompt(term);
+}
+
+export function runCommand(term, text) {
   term.writeln(''); // Changes to the next line from the prompt
 
   const words = text.split(' ').filter(word => word.length > 0);
@@ -38,8 +51,8 @@ function runCommand(term, text) {
     const command = words[0];
     const args = words.slice(1);
 
-    if (command in commands) {
-      commands[command].f(term, args);
+    if (command in COMMANDS) {
+      COMMANDS[command].run(term, args);
       return;
     } else {
       term.writeln(`${command}: command not found`);
@@ -58,18 +71,11 @@ function runCommand(term, text) {
   }
 }
 
-function runWelcome(term, _) {
-  printContent(term, files['welcome'].content);
-
-  Shell.code = 0;
-  Shell.prompt(term);
-}
-
 function runHelp(term, _) {
   const padding = 10;
   const lines = [];
-  for (const command of Object.keys(commands).toSorted()) {
-    const text = '  ' + command + ' '.repeat(padding - command.length) + commands[command].description;
+  for (const command of Object.keys(COMMANDS).toSorted()) {
+    const text = '  ' + command + ' '.repeat(padding - command.length) + COMMANDS[command].description;
     lines.push([text, { type: 'command', pattern: command, url: '' }]);
   }
 
@@ -88,9 +94,9 @@ function runHelp(term, _) {
       ['to run a command.']
   ]};
 
-  printContent(term, preText.content);
-  printContent(term, lines);
-  printContent(term, postText.content);
+  printLines(term, preText.content);
+  printLines(term, lines);
+  printLines(term, postText.content);
 
   Shell.code = 0;
   Shell.prompt(term);
@@ -98,11 +104,11 @@ function runHelp(term, _) {
 }
 
 function runLs(term, _) {
-  const keys = Object.keys(files).toSorted();
+  const keys = Object.keys(FILES).toSorted();
   const filenames = [];
   const line = [];
   for (const key of keys) {
-    switch (files[key].permission) {
+    switch (FILES[key].permission) {
       case 'r':
         filenames.push(key);
         line.push({ type: 'alias', pattern: key, url: `cat ${key}`});
@@ -127,10 +133,10 @@ function runLs(term, _) {
 function runCat(term, args) {
   if (args.length === 1) {
     const filename = args[0];
-    if (filename in files) {
-      const file = files[filename];
+    if (filename in FILES) {
+      const file = FILES[filename];
       if (file.permission === 'r') {
-        printContent(term, file.content);
+        printLines(term, file.content);
         Shell.code = 0;
         Shell.prompt(term);
       } else {
@@ -140,7 +146,7 @@ function runCat(term, args) {
       }
     } else {
       if (filename === '-h' || filename ==='--help') {
-        term.writeln(commands['cat'].description);
+        term.writeln(COMMANDS['cat'].description);
         term.writeln('');
         term.writeln('Usage:');
         term.writeln('  \x1b[32;1mcat\x1b[0m <\x1b[33;1mfile\x1b[0m>');

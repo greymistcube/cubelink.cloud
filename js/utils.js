@@ -1,7 +1,6 @@
-// Tracks links
-let links = [];
+import { Shell } from "./global.js";
 
-function loadWebgl(term) {
+export function loadWebgl(term) {
   try {
     const webgl = new window.WebglAddon.WebglAddon();
     term.loadAddon(webgl);
@@ -13,14 +12,14 @@ function loadWebgl(term) {
 }
 
 let _linkPopup;
-function removeLinkPopup(_, __) {
+export function removeLinkPopup() {
   if (_linkPopup) {
      _linkPopup.remove();
      _linkPopup = undefined;
   }
 }
 
-function showLinkPopup(event, link) {
+export function showLinkPopup(term, event, link) {
   removeLinkPopup(event, link);
   const parent = event.currentTarget.parentNode;
   const parentRect = parent.getBoundingClientRect();
@@ -30,9 +29,9 @@ function showLinkPopup(event, link) {
   popup.style.position = 'absolute';
 
   if (event.clientY < rootRect.height / 2) {
-    popup.style.top = (event.clientY - parentRect.top + Math.trunc(Screen.fontSize * 0.8)) + 'px';
+    popup.style.top = (event.clientY - parentRect.top + Math.trunc(term.options.fontSize * 0.8)) + 'px';
   } else {
-    popup.style.bottom = (parentRect.bottom - event.clientY + Math.trunc(Screen.fontSize * 0.8)) + 'px';
+    popup.style.bottom = (parentRect.bottom - event.clientY + Math.trunc(term.options.fontSize * 0.8)) + 'px';
   }
 
   if (event.clientX < rootRect.width / 2) {
@@ -54,11 +53,3 @@ function showLinkPopup(event, link) {
   parent.appendChild(popup);
   _linkPopup = popup;
 };
-
-async function simulateTyping(term, input) {
-  const sleep = 32;
-  for (const char of input) {
-    await new Promise(resolve => setTimeout(resolve, sleep));
-    handleInput(term, char);
-  }
-}

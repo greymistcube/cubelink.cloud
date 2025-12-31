@@ -1,3 +1,5 @@
+import { Shell } from "./global.js";
+
 class Rain {
   /** Density of the rain */
   static density = 2;
@@ -103,7 +105,7 @@ class Drop {
 }
 
 // This may not behave well on window resize event.
-async function runMatrix(term, _) {
+export async function runMatrix(term, _) {
   // Clear the screen and hide the cursor
   term.writeln('', () => { term.clear(); });
   term.write('\x1b[?25l');

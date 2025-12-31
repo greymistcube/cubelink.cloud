@@ -4,6 +4,8 @@
  *  Mostly based on Daniele Venier's [deobfuscated code and explanation](https://asymptoticbits.com/posts/ascii-liquid/).
  */
 
+import { Shell } from "./global.js";
+
 /** Custom vector class */
 class Vector {
   constructor(x, y) {
@@ -323,7 +325,7 @@ class Renderer {
 }
 
 // This may not behave well on window resize event.
-async function runFluid(term, _) {
+export async function runFluid(term, _) {
   // Clear the screen and hide the cursor
   term.writeln('', () => { term.clear(); });
   term.write('\x1b[?25l');

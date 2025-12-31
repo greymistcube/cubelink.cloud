@@ -1,4 +1,4 @@
-const files = {
+export const FILES = {
   'welcome': {
     'content': [
       ['\x1b[34;1mSay Cheong\x1b[0m'],
