@@ -236,7 +236,7 @@ export const FILES = {
       [''],
       ['### Cubelink'],
       [''],
-      ['[image] [link]', { type: 'image', pattern: 'image', url: '/images/cubelink.png' }, { type: 'link', pattern: 'link', url: 'https://cubelink.cloud' }],
+      ['[image] [link]', { type: 'image', pattern: 'image', url: '/images/cubelink.png' }, { type: 'link', pattern: 'link', url: 'https://github.com/greymistcube/cubelink.cloud' }],
       [''],
       ['- Website with terminal interface.'],
       ['- Built for hosting a personal homepage.'],
