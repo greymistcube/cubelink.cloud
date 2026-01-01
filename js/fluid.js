@@ -4,7 +4,7 @@
  *  Mostly based on Daniele Venier's [deobfuscated code and explanation](https://asymptoticbits.com/posts/ascii-liquid/).
  */
 
-import { Shell } from "./global.js";
+import { LINKS, Shell } from "./global.js";
 
 /** Custom vector class */
 class Vector {
@@ -326,9 +326,13 @@ class Renderer {
 
 // This may not behave well on window resize event.
 export async function runFluid(term, _) {
-  // Clear the screen and hide the cursor
-  term.writeln('', () => { term.clear(); });
+  // Switch to alternate buffer and hide the cursor
+  term.write('\x1b[?1049h');
   term.write('\x1b[?25l');
+
+  // Backup and clear tracked links to remove artifacts
+  let linksBackup = [...LINKS];
+  LINKS.length = 0;
 
   // Turn process to true and add a listener to cancel process from any keypress
   Shell.process = true;
@@ -353,10 +357,14 @@ export async function runFluid(term, _) {
 
   // Dispose the listener and turn back on the cursor
   listener.dispose();
-  term.write('\x1b[?25h');
 
-  // Move the cursor to the bottom first before clearing
-  term.writeln(`\x1b[${term.rows};1H`);
-  Shell.prompt(term);
-  term.write('', () => { term.clear(); });
+  // Turn back on the cursor and switch back to normal buffer
+  term.write('\x1b[?25h');
+  term.write('\x1b[?1049l');
+
+  // Restore links
+  LINKS.push(...linksBackup);
+
+  // Disable additional padding since there is no output to normal buffer
+  Shell.prompt(term, false);
 }

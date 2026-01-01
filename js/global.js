@@ -8,8 +8,10 @@ export class Shell {
   static process = false;
   static promptLength = 24;
 
-  static prompt(term) {
-    term.writeln('');
+  static prompt(term, newline = true) {
+    if (newline) {
+      term.writeln('');
+    }
     term.write('\x1b[32;1muser \x1b[33m@ \x1b[32mcubelink \x1b[33m: \x1b[34m~ ');
     if (Shell.code === 0) {
       term.write('\x1b[32m0 ');
