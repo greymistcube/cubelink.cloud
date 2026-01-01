@@ -30,6 +30,7 @@ class Rain {
 
   /** Render the scene */
   render(term) {
+    this.rows = term.rows;
     this.drops.forEach(drop => drop.render(term));
   }
 
