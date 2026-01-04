@@ -126,11 +126,11 @@ document.addEventListener('DOMContentLoaded', function() {
             switch(link.type) {
               case 'link': // Open the link in new window
                 activate = () => { window.open(link.url, '_blank '); };
-                hover = (event, _) => showLinkPopup(term, event, link);
+                hover = (event, _) => showLinkPopup(term, event, link, bufferLineNumber);
                 leave = (_, __) => removeLinkPopup();
                 break;
               case 'image': // Same as link, but no activate action
-                hover = (event, _) => showLinkPopup(term, event, link);
+                hover = (event, _) => showLinkPopup(term, event, link, bufferLineNumber);
                 leave = (_, __) => removeLinkPopup();
                 break;
               case 'command': // Simulate entering the command

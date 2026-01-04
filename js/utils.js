@@ -19,19 +19,26 @@ export function removeLinkPopup() {
   }
 }
 
-export function showLinkPopup(term, event, link) {
+export function showLinkPopup(term, event, link, bufferLineNumber) {
   removeLinkPopup(event, link);
+
+  // Variables for calculating popup position
+  const rootRect = document.documentElement.getBoundingClientRect();
   const parent = event.currentTarget.parentNode;
   const parentRect = parent.getBoundingClientRect();
-  const rootRect = document.documentElement.getBoundingClientRect();
+  const cellHeight = parentRect.height / term.rows;
+
+  // This gives the y position as line number within the viewport
+  const y = bufferLineNumber - term.buffer.active.viewportY;
+
   let popup = document.createElement('div');
   popup.classList.add('xterm-link-popup');
   popup.style.position = 'absolute';
 
   if (event.clientY < rootRect.height / 2) {
-    popup.style.top = (event.clientY - parentRect.top + Math.trunc(term.options.fontSize * 0.8)) + 'px';
+    popup.style.top = (Math.trunc(y * cellHeight)) + 'px';
   } else {
-    popup.style.bottom = (parentRect.bottom - event.clientY + Math.trunc(term.options.fontSize * 0.8)) + 'px';
+    popup.style.bottom = (Math.trunc((term.rows - y + 1) * cellHeight)) + 'px';
   }
 
   if (event.clientX < rootRect.width / 2) {
