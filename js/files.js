@@ -1,3 +1,5 @@
+import { email, tel, address, homepage, github } from './info.js';
+
 export const FILES = {
   'welcome': {
     'content': [
@@ -9,10 +11,10 @@ export const FILES = {
       ['\x1b[36m       /         /\\        \x1b[0m'],
       ['\x1b[36m      /         /  \\       \x1b[0mName: Seongyoon "Say" Cheong'],
       ['\x1b[36m     /         /    \\      \x1b[0mOccupation: Software Engineer'],
-      ['\x1b[36m    /________ /      \\     \x1b[0mResidence: <ADDRESS_PATTERN>', { type: 'link', pattern: '<ADDRESS_PATTERN>', url: '<ADDRESS_URL>' }],
-      ['\x1b[36m    \\         \\      /     \x1b[0mHomepage: <HOMEPAGE_PATTERN>', { type: 'link', pattern: '<HOMEPAGE_PATTERN>', url: '<HOMEPAGE_URL>' }],
-      ['\x1b[36m     \\         \\    /      \x1b[0mGithub: <GITHUB_PATTERN>', { type: 'link', pattern: '<GITHUB_PATTERN>', url: '<GITHUB_URL>' }],
-      ['\x1b[36m      \\         \\  /       \x1b[0mMail: <EMAIL_PATTERN>', { type: 'link', pattern: '<EMAIL_PATTERN>', url: '<EMAIL_URL>' }],
+      [`\x1b[36m    /________ /      \\     \x1b[0mResidence: ${address.pattern}`, { type: 'link', pattern: address.pattern, url: address.url }],
+      [`\x1b[36m    \\         \\      /     \x1b[0mHomepage: ${homepage.pattern}`, { type: 'link', pattern: homepage.pattern, url: homepage.url }],
+      [`\x1b[36m     \\         \\    /      \x1b[0mGithub: ${github.pattern}`, { type: 'link', pattern: github.pattern, url: github.url }],
+      [`\x1b[36m      \\         \\  /       \x1b[0mMail: ${email.pattern}`, { type: 'link', pattern: email.pattern, url: email.url }],
       ['\x1b[36m       \\ ________\\/        \x1b[0m'],
       ['\x1b[36m                           \x1b[0m'],
       ['Powered by xterm.js', { type: 'link', pattern: 'xterm.js', url: 'https://xtermjs.org'}],
@@ -38,11 +40,11 @@ export const FILES = {
       [''],
       ['## Contact'],
       [''],
-      ['- Email: <EMAIL_PATTERN>', { type: 'link', pattern: '<EMAIL_PATTERN>', url: '<EMAIL_URL>' }],
-      ['- Mobile: <TEL_PATTERN>', { type: 'link', pattern: '<TEL_PATTERN>', url: '<TEL_URL>' }],
-      ['- Residence: <ADDRESS_PATTERN>', { type: 'link', pattern: '<ADDRESS_PATTERN>', url: '<ADDRESS_URL>' }],
-      ['- Homepage: <HOMEPAGE_PATTERN>', { type: 'link', pattern: '<HOMEPAGE_PATTERN>', url: '<HOMEPAGE_URL>' }],
-      ['- Github: <GITHUB_PATTERN>', { type: 'link', pattern: '<GITHUB_PATTERN>', url: '<GITHUB_URL>' }],
+      [`- Email: ${email.pattern}`, { type: 'link', pattern: email.pattern, url: email.url }],
+      [`- Mobile: ${tel.pattern}`, { type: 'link', pattern: tel.pattern, url: tel.url }],
+      [`- Residence: ${address.pattern}`, { type: 'link', pattern: address.pattern, url: address.url }],
+      [`- Homepage: ${homepage.pattern}`, { type: 'link', pattern: homepage.pattern, url: homepage.url }],
+      [`- Github: ${github.pattern}`, { type: 'link', pattern: github.pattern, url: github.url }],
       [''],
       ['## Summary'],
       [''],
