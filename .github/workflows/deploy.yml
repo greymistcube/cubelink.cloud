@@ -5,10 +5,10 @@ on:
       - master
 
 jobs:
-  test-deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repo
+    - name: Checkout Repo
       uses: actions/checkout@v4
 
     - name: Setup SSH Key
@@ -41,8 +41,14 @@ jobs:
 
     - name: Copy to Server
       run: |
+        scp ./index.html ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/html/
+        scp -r ./css/ ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/html/
+        scp -r ./js/ ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/html/
+        scp -r ./images/ ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/html/
+        scp ./*.pdf ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/html/
+
         scp ./index.html ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/test/
-        scp ./*.pdf ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/test/
         scp -r ./css/ ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/test/
-        scp -r ./images/ ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/test/
         scp -r ./js/ ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/test/
+        scp -r ./images/ ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/test/
+        scp ./*.pdf ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/test/
