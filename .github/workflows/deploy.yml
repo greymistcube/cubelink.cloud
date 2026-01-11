@@ -1,0 +1,42 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Setup SSH Key
+      run: |
+        mkdir ~/.ssh
+        cat ${{ secrets.DEPLOY_SSH_KEY }} > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -t rsa ${{ secrets.SERVER_DOMAIN }} >> ~/.ssh/known_hosts
+
+    - name: Inject Personal Info
+      run: |
+        cd ${{ github.workspace }}
+        sed -i 's|<EMAIL_PATTERN>|${{ secrets.EMAIL_PATTERN }}|g' ./js/info.js
+        sed -i 's|<EMAIL_URL>|${{ secrets.EMAIL_URL }}|g' ./js/info.js
+        sed -i 's|<TEL_PATTERN>|${{ secrets.TEL_PATTERN }}}|g' ./js/info.js
+        sed -i 's|<TEL_URL>|${{ secrets.TEL_URL }}|g' ./js/info.js
+        sed -i 's|<HOMEPAGE_PATTERN>|${{ secrets.HOMEPAGE_PATTERN }}|g' ./js/info.js
+        sed -i 's|<HOMEPAGE_URL>|${{ secrets.HOMEPAGE_URL }}|g' ./js/info.js
+        sed -i 's|<ADDRESS_PATTERN>|${{ secrets.ADDRESS_PATTERN }}|g' ./js/info.js
+        sed -i 's|<ADDRESS_URL>|${{ secrets.ADDRESS_URL }}|g' ./js/info.js
+        sed -i 's|<GITHUB_PATTERN>|${{ secrets.GITHUB_PATTERN }}|g' ./js/info.js
+        sed -i 's|<GITHUB_URL>|${{ secrets.GITHUB_URL }}|g' ./js/info.js
+
+    # todo: add a step to download and decrypt pdfs
+
+    - name: Copy to Server
+      run: |
+        scp ./index.html ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/test/
+        scp -r ./css/ ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/test/
+        scp -r ./images/ ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/test/
+        scp -r ./js/ ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/test/
