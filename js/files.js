@@ -21,7 +21,7 @@ export const FILES = {
       [''],
       ['Welcome to \x1b[38;5;208;1mUbuntu\x1b[0m 24.04.3 LTS (GNU/Linux 6.14.0)'], // Host machine environment
       ['For the best viewing experience, a keyboard and a mouse are recommended.'],
-      ['Alternatively, you can download my resume as a pdf either in English or Korean.', { type: 'link', pattern: 'English', url: 'https://cubelink.cloud/files/resume.pdf' }, { type: 'link', pattern: 'Korean', url: 'https://cubelink.cloud/files/resume.ko.pdf' }],
+      ['Alternatively, you can download my resume as a pdf either in English or Korean.', { type: 'link', pattern: 'English', url: `${window.location.origin}/resume.pdf` }, { type: 'link', pattern: 'Korean', url: `${window.location.origin}/resume.ko.pdf` }],
       ['Below is a simple emulated terminal, try running \'help\'.', { type: 'command', pattern: 'help', url: '' }],
     ],
     'permission': 'x',
