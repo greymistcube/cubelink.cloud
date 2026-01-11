@@ -33,11 +33,16 @@ jobs:
         sed -i 's|<GHUB_PATTERN>|${{ secrets.GHUB_PATTERN }}|g' ./js/info.js
         sed -i 's|<GHUB_URL>|${{ secrets.GHUB_URL }}|g' ./js/info.js
 
-    # todo: add a step to download and decrypt pdfs
+    - name: Fetch Resume Files
+      run: |
+        cd ${{ github.workspace }}
+        wget https://raw.githubusercontent.com/greymistcube/cubelink.cloud/assets/resume.pdf
+        wget https://raw.githubusercontent.com/greymistcube/cubelink.cloud/assets/resume.ko.pdf
 
     - name: Copy to Server
       run: |
         scp ./index.html ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/test/
+        scp ./*.pdf ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/test/
         scp -r ./css/ ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/test/
         scp -r ./images/ ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/test/
         scp -r ./js/ ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.SERVER_DOMAIN }}:/var/www/test/
