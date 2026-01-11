@@ -29,8 +29,8 @@ jobs:
         sed -i 's|<HOMEPAGE_URL>|${{ secrets.HOMEPAGE_URL }}|g' ./js/info.js
         sed -i 's|<ADDRESS_PATTERN>|${{ secrets.ADDRESS_PATTERN }}|g' ./js/info.js
         sed -i 's|<ADDRESS_URL>|${{ secrets.ADDRESS_URL }}|g' ./js/info.js
-        sed -i 's|<GITHUB_PATTERN>|${{ secrets.GITHUB_PATTERN }}|g' ./js/info.js
-        sed -i 's|<GITHUB_URL>|${{ secrets.GITHUB_URL }}|g' ./js/info.js
+        sed -i 's|<GHUB_PATTERN>|${{ secrets.GHUB_PATTERN }}|g' ./js/info.js
+        sed -i 's|<GHUB_URL>|${{ secrets.GHUB_URL }}|g' ./js/info.js
 
     # todo: add a step to download and decrypt pdfs
 
