@@ -209,6 +209,7 @@ function handleInput(term, event) {
 
 async function simulateTyping(term, input) {
   const sleep = 32;
+  term.scrollToBottom();
   for (const char of input) {
     await new Promise(resolve => setTimeout(resolve, sleep));
     handleInput(term, char);
