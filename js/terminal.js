@@ -68,103 +68,75 @@ class TermHandler {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Make terminal visible only when document is ready
-  document.querySelector('.demo').style.display = 'flex';
-
-  let term = TermHandler.createTerminal();
-  term.open(document.querySelector('.demo .inner'));
-
-  // Try loading webgl
-  loadWebgl(term);
-
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      TermHandler.updateTerminal(term);
-    }, 256);
-  });
-
-  // Cancel wheel events from scrolling the page if the terminal has scrollback
-  document.querySelector('.xterm').addEventListener('wheel', e => {
-    if (term.buffer.active.baseY > 0) {
-      e.preventDefault();
-    }
-  });
-
-  function runFakeTerminal() {
-    if (term._initialized) {
-      return;
-    }
-
-    term._initialized = true;
-
-    // Print welcome text
-    COMMANDS.welcome.run(term, []);
-
-    term.focus();
-
-    term.onData(e => handleInput(term, e));
-    term.registerLinkProvider({
-      provideLinks(bufferLineNumber, callback) {
-        while (LINKS.length > 0 && LINKS[0].marker.isDisposed) {
-          LINKS.shift();
-        }
-
-        let callbacks = [];
-        for (let link of LINKS) {
-          // Need to consider discrepancy between indices and coordinates
-          // The former starts with 0 and the latter starts with 1
-          if (bufferLineNumber === link.marker.line + 1) {
-            let text = term.buffer.active.getLine(link.marker.line).translateToString();
-            let x = text.indexOf(link.pattern);
-
-            let activate = () => { };
-            let hover = (_, __) => { };
-            let leave = (_, __) => { };
-            switch(link.type) {
-              case 'link': // Open the link in new window
-                activate = () => { window.open(link.url, '_blank '); };
-                hover = (event, _) => showLinkPopup(term, event, link, bufferLineNumber);
-                leave = (_, __) => removeLinkPopup();
-                break;
-              case 'image': // Same as link, but no activate action
-                hover = (event, _) => showLinkPopup(term, event, link, bufferLineNumber);
-                leave = (_, __) => removeLinkPopup();
-                break;
-              case 'command': // Simulate entering the command
-                activate = () => { simulateTyping(term, link.pattern + '\r'); };
-                break;
-              case 'alias':
-                activate = () => { simulateTyping(term, link.url + '\r'); };
-                break;
-              default:
-                break;
-            }
-
-            callbacks.push({
-                text: link.pattern,
-                range: {
-                  // Assumes there is no wrapping
-                  start: { x: x + 1, y: bufferLineNumber },
-                  end: { x: x + link.pattern.length, y: bufferLineNumber }
-                },
-                activate: activate,
-                hover: hover,
-                leave: leave
-              });
-          }
-        }
-
-        callback(callbacks);
-        return;
-      }
-    });
+function runFakeTerminal(term) {
+  if (term._initialized) {
+    return;
   }
 
-  runFakeTerminal();
-});
+  term._initialized = true;
+
+  // Print welcome text
+  COMMANDS.welcome.run(term, []);
+
+  term.focus();
+
+  term.onData(e => handleInput(term, e));
+  term.registerLinkProvider({
+    provideLinks(bufferLineNumber, callback) {
+      while (LINKS.length > 0 && LINKS[0].marker.isDisposed) {
+        LINKS.shift();
+      }
+
+      let callbacks = [];
+      for (let link of LINKS) {
+        // Need to consider discrepancy between indices and coordinates
+        // The former starts with 0 and the latter starts with 1
+        if (bufferLineNumber === link.marker.line + 1) {
+          let text = term.buffer.active.getLine(link.marker.line).translateToString();
+          let x = text.indexOf(link.pattern);
+
+          let activate = () => { };
+          let hover = (_, __) => { };
+          let leave = (_, __) => { };
+          switch(link.type) {
+            case 'link': // Open the link in new window
+              activate = () => { window.open(link.url, '_blank '); };
+              hover = (event, _) => showLinkPopup(term, event, link, bufferLineNumber);
+              leave = (_, __) => removeLinkPopup();
+              break;
+            case 'image': // Same as link, but no activate action
+              hover = (event, _) => showLinkPopup(term, event, link, bufferLineNumber);
+              leave = (_, __) => removeLinkPopup();
+              break;
+            case 'command': // Simulate entering the command
+              activate = () => { simulateTyping(term, link.pattern + '\r'); };
+              break;
+            case 'alias':
+              activate = () => { simulateTyping(term, link.url + '\r'); };
+              break;
+            default:
+              break;
+          }
+
+          callbacks.push({
+              text: link.pattern,
+              range: {
+                // Assumes there is no wrapping
+                start: { x: x + 1, y: bufferLineNumber },
+                end: { x: x + link.pattern.length, y: bufferLineNumber }
+              },
+              activate: activate,
+              hover: hover,
+              leave: leave
+            });
+        }
+      }
+
+      callback(callbacks);
+      return;
+    }
+  });
+}
 
 /** Handle the given keyboard input event */
 function handleInput(term, event) {
@@ -215,3 +187,35 @@ async function simulateTyping(term, input) {
     handleInput(term, char);
   }
 }
+
+async function main() {
+  // Wait for the font to load to calculate the correct dimensions
+  await document.fonts.load('1em Ubuntu Mono');
+
+  document.querySelector('.demo').style.display = 'flex';
+
+  let term = TermHandler.createTerminal();
+  term.open(document.querySelector('.demo .inner'));
+
+  // Try loading webgl
+  loadWebgl(term);
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      TermHandler.updateTerminal(term);
+    }, 256);
+  });
+
+  // Cancel wheel events from scrolling the page if the terminal has scrollback
+  document.querySelector('.xterm').addEventListener('wheel', e => {
+    if (term.buffer.active.baseY > 0) {
+      e.preventDefault();
+    }
+  });
+
+  runFakeTerminal(term);
+}
+
+await main();
