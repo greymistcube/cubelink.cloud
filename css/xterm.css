@@ -220,7 +220,7 @@
 div.xterm-link-popup {
     display: flex;
     flex-direction: column;
-    font-family: "Cascadia Code", Menlo, monospace;
+    font-family: "Ubuntu Mono", Menlo, monospace;
     font-size: 15px;
     line-break: normal;
     padding: 6px 6px;

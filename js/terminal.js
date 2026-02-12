@@ -41,11 +41,11 @@ class TermHandler {
   static #updateDimensions() {
     let width = window.innerWidth - SCREENPADDING;
     let height = window.innerHeight - SCREENPADDING;
-    let widthBasedSize = (width / 40) * 0.84;
-    let heightBasedSize = (height / 24) * 0.84;
+    let widthBasedSize = (width / 40);
+    let heightBasedSize = (height / 24);
 
     TermHandler.fontSize = (widthBasedSize < heightBasedSize) ? Math.trunc(widthBasedSize) : Math.trunc(heightBasedSize);
-    TermHandler.rows = Math.max(MINROWS, Math.trunc(height / TermHandler.fontSize * 0.84));
+    TermHandler.rows = Math.max(MINROWS, Math.trunc(height / TermHandler.fontSize));
   }
 
   static createTerminal() {
@@ -54,7 +54,7 @@ class TermHandler {
       fontSize: TermHandler.fontSize,
       cols: TermHandler.cols,
       rows: TermHandler.rows,
-      fontFamily: '"Cascadia Code", Menlo, monospace',
+      fontFamily: '"Ubuntu Mono", Menlo, monospace',
       theme: THEME,
       cursorBlink: true,
       allowProposedApi: true
