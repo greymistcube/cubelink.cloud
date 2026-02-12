@@ -3,7 +3,6 @@ import { LINKS } from "./global.js";
 /** Format and print the given line */
 export function printLine(term, line) {
   let text = line[0];
-  const hLine = `\x1b[37;1m${'─'.repeat(term.cols)}\x1b[0m`;
 
   // Inject formatting to links / commands
   if (line.length > 1) {
@@ -28,10 +27,13 @@ export function printLine(term, line) {
     if (text.length > 1) {
       switch (text[0]) {
         case '#':
-          text = (text.startsWith('## ') ? `${hLine}\r\n\r\n` : '') + `\x1b[34;1m${text}\x1b[0m`;
+          text = `\x1b[34;1m${text}\x1b[0m`;
           break;
         case '>':
-          text = `\x1b[37;1m│\x1b[0m\x1b[37;2m${text.slice(1)}\x1b[0m`;
+          text = `\x1b[37;1m|\x1b[0m\x1b[37;2m${text.slice(1)}\x1b[0m`;
+          break;
+        case '-':
+          text = text.startsWith('---') ? `\x1b[37;1m${'-'.repeat(term.cols)}\x1b[0m` : text;
           break;
         default:
           break;
