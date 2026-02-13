@@ -51,7 +51,7 @@ class TermHandler {
   static createTerminal() {
     TermHandler.#updateDimensions();
     return new window.Terminal({
-      fontSize: TermHandler.fontSize,
+      fontSize: TermHandler.fontSize * 0.9,
       cols: TermHandler.cols,
       rows: TermHandler.rows,
       fontFamily: '"Ubuntu Mono", Menlo, monospace',
@@ -63,7 +63,7 @@ class TermHandler {
 
   static updateTerminal(term) {
     TermHandler.#updateDimensions();
-    term.options.fontSize = TermHandler.fontSize;
+    term.options.fontSize = TermHandler.fontSize * 0.9;
     term.resize(TermHandler.cols, TermHandler.rows);
   }
 }
